@@ -1,4 +1,4 @@
-# dv2017
+# US Mass-Shooting (1966-2017)
 This repository is for the Data Visualization course 2017 final project.
 
 Topic:
