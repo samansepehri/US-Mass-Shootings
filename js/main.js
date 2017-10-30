@@ -7,10 +7,46 @@ function loadDataByYear() {
   });
 }
 
+let tileMapData = {
+  metadata: {
+    rowCount: 10,
+    colCount: 5
+  },
+  data: [
+    {
+      row: 1,
+      col: 0,
+      name: "A",
+      incidentCount: 1
+    },
+    {
+      row: 1,
+      col: 1,
+      name: "B",
+      incidentCount: 4
+    },
+    {
+      row: 1,
+      col: 2,
+      name: "C",
+      incidentCount: 3
+    },
+    {
+      row: 2,
+      col: 2,
+      name: "B",
+      incidentCount: 2
+    }
+  ]
+}
+
 async function init() {
-  let yearChart = new YearChart(d3.select("body"));
+  let body = d3.select("body");
+  let yearChart = new YearChart(body);
+  let tileMap = new TileMap(body);
   let dataByYear = await loadDataByYear();
   yearChart.update(dataByYear);
+  tileMap.updateMap(tileMapData);
 }
 
 init();
