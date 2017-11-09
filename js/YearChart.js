@@ -1,7 +1,7 @@
 class YearChart {
   constructor(parent) {
     let width = 500;
-    let height = 100;
+    let height = 300;
 
     this.div = parent.append("div");
     this.svg = this.div.append("svg")
@@ -10,12 +10,12 @@ class YearChart {
   }
 
   update(dataByYear) {
-    console.log(dataByYear);
-
     let d3this = d3.select(this);
-    let w = 20;
+    let w = 40;
     let xMargin = 5;
-    let y0 = 100;
+    let x0 = xMargin + w * 0.5;
+    let y0Bar = 30;
+    let y0Label = 50;
     let scaleIncidentCount = (incidentCount) => {
       return incidentCount * 3;
     }
@@ -24,11 +24,12 @@ class YearChart {
     let rectEnter = rect.enter()
       .append("rect")
       .classed("year-bar", true);
+    
     rect.merge(rectEnter)
       .attr("transform", (d, i) => {
         return `translate(
-        ${i * (xMargin + w)},
-        ${y0 - scaleIncidentCount(d.incidentCount)})`
+        ${x0 + i * (xMargin + w) - w * 0.5},
+        ${y0Bar - scaleIncidentCount(d.incidentCount)})`;
       })
       .attr("fill", "black")
       .attr("height", (d) => {
@@ -39,6 +40,23 @@ class YearChart {
         main.tileMap.updateContent([
           
         ]);
+      });
+    
+    let yearLabel = this.svg.selectAll("text.year-label")
+      .data(dataByYear);
+    let yearLabelEnter = yearLabel.enter()
+      .append("text")
+      .classed("year-label", true);
+    
+    yearLabel.merge(yearLabelEnter)
+      .text((d) => {
+        return d.year;
+      })
+      .attr("text-anchor", "middle")
+      .attr("transform", (d, i) => {
+        return `translate(
+        ${x0 + i * (xMargin + w)},
+        ${y0Label})`;
       });
   }
 }
