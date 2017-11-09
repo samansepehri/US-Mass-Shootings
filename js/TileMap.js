@@ -37,7 +37,7 @@ class TileMap {
     let tileHeight = (this.height - tileMargin * (rowCount - 1)) / rowCount;
     
     let domain = [0, 10];
-    let range = ["#ff0000", "#00ff00"];
+    let range = ["#ffffff", "#ff0000"];
     let colorScale = d3.scaleLinear()
       .domain(domain)
       .range(range);
