@@ -1,7 +1,7 @@
 class YearChart {
   constructor(parent) {
     let width = 500;
-    let height = 300;
+    let height = 100;
 
     this.div = parent.append("div");
     this.svg = this.div.append("svg")
@@ -38,7 +38,14 @@ class YearChart {
       .attr("width", w)
       .on("click", (d, i) => {
         main.tileMap.updateContent([
-          
+          {
+            "state": "A",
+            "incidentCount": 90
+          },
+          {
+            "state": "B",
+            "incidentCount": 10
+          }
         ]);
       });
     

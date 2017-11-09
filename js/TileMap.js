@@ -9,13 +9,26 @@ class TileMap {
     this.svg = this.div.append("svg")
       .attr("width", width)
       .attr("height", height);
+
+    this.tilesByName = {};
   }
 
   updateContent(contentData) {
-    
+    let tilesByName = this.tilesByName;
+
+    contentData.forEach((item) => {
+      let tile = tilesByName[item.state];
+      // console.log(tile);
+      tile.label.text("x");
+    });
   }
 
   updateMap(tileMapData) {
+    let tilesByName = this.tilesByName = {};
+    tileMapData.data.forEach((d) => {
+      tilesByName[d.name] = {};
+    });
+
     let rowCount = tileMapData.metadata.rowCount;
     let colCount = tileMapData.metadata.colCount;
 
@@ -35,10 +48,12 @@ class TileMap {
       .append("rect")
       .classed("tile", true);
     rect.merge(rectEnter)
+      .each(function(d) {
+        tilesByName[d.name].rect = d3.select(this);
+      })
       .attr("width", tileWidth)
       .attr("height", tileHeight)
       .attr("fill", (d) => {
-        console.log(d.incidentCount);
         return colorScale(d.incidentCount);
       })
       .attr("transform", (d) => {
@@ -53,6 +68,9 @@ class TileMap {
       .append("text")
       .classed("state-name", true);
     txtName.merge(txtNameEnter)
+      .each(function (d) {
+        tilesByName[d.name].label = d3.select(this);
+      })
       .text((d) => {
         return d.name;
       })
