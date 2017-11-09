@@ -34,6 +34,11 @@ class YearChart {
       .attr("height", (d) => {
         return scaleIncidentCount(d.incidentCount)
       })
-      .attr("width", w);
+      .attr("width", w)
+      .on("click", (d, i) => {
+        main.tileMap.updateContent([
+          
+        ]);
+      });
   }
 }

@@ -11,6 +11,10 @@ class TileMap {
       .attr("height", height);
   }
 
+  updateContent(contentData) {
+    
+  }
+
   updateMap(tileMapData) {
     let rowCount = tileMapData.metadata.rowCount;
     let colCount = tileMapData.metadata.colCount;

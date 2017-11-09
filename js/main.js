@@ -40,10 +40,13 @@ let tileMapData = {
   ]
 }
 
+main = {};
+
 async function init() {
   let body = d3.select("body");
   let yearChart = new YearChart(body);
   let tileMap = new TileMap(body);
+  main.tileMap = tileMap;
   let dataByYear = await loadDataByYear();
   yearChart.update(dataByYear);
   tileMap.updateMap(tileMapData);
