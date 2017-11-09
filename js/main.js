@@ -9,7 +9,7 @@ function loadDataByYear() {
 
 let tileMapData = {
   metadata: {
-    rowCount: 10,
+    rowCount: 5,
     colCount: 5
   },
   data: [
@@ -46,10 +46,23 @@ async function init() {
   let body = d3.select("body");
   let yearChart = new YearChart(body);
   let tileMap = new TileMap(body);
+  let incidentTable = new IncidentTable(body);
   main.tileMap = tileMap;
   let dataByYear = await loadDataByYear();
   yearChart.update(dataByYear);
   tileMap.updateMap(tileMapData);
+  incidentTable.update([
+    {
+      title: "title A",
+      date: "01/01/01",
+      state: "AA"
+    },
+    {
+      title: "title B",
+      date: "02/02/02",
+      state: "BB"
+    }
+  ])
 }
 
 init();

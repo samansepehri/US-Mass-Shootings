@@ -1,7 +1,7 @@
 class TileMap {
   constructor(parent) {
     let width = 500;
-    let height = 500;
+    let height = 200;
     this.width = width;
     this.height = height;
 
