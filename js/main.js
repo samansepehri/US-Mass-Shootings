@@ -90,7 +90,28 @@ let dayChartData = [
   {
     incidentCount: 10
   }
-]
+];
+
+let stateYearChartData = {
+  metadata: {
+    yearCount: 4,
+    stateCount: 3
+  },
+  data: [
+    {
+      state: "AA",
+      incidentCountFraction: [0.2, 0.4, 0.1, 0.3]
+    },
+    {
+      state: "BB",
+      incidentCountFraction: [0.1, 0.3, 0.8, 0.3]
+    },
+    {
+      state: "CC",
+      incidentCountFraction: [0.7, 0.3, 0.1, 0.4]
+    }
+  ]
+};
 
 main = {};
 
@@ -109,12 +130,16 @@ async function init() {
   let dayChart = new DayChart(body);
   main.dayChart = dayChart;
 
-  let yearChartData = await loadData("data/data.json");
+  let stateYearChart = new StateYearChart(body);
+  main.stateYearChart = stateYearChart;
 
+  let yearChartData = await loadData("data/data.json");
   yearChart.update(yearChartData);
+
   tileMap.updateMap(tileMapData);
   incidentTable.update(incidentTableData);
   dayChart.update(dayChartData);
+  stateYearChart.update(stateYearChartData);
 }
 
 init();
