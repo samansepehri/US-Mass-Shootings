@@ -61,6 +61,21 @@ async function init() {
       title: "title B",
       date: "02/02/02",
       state: "BB"
+    },
+    {
+      title: "title C",
+      date: "02/02/02",
+      state: "CC"
+    },
+    {
+      title: "title D",
+      date: "02/02/02",
+      state: "BB"
+    },
+    {
+      title: "title E",
+      date: "02/02/02",
+      state: "DD"
     }
   ])
 }
