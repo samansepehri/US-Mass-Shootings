@@ -2,10 +2,10 @@ class YearChart {
   constructor(parent) {
     let width = 500;
     let height = 100;
-
-    parent.append("h2")
-      .text("Incidents by year");
+    
     this.div = parent.append("div");
+    this.div.append("h2")
+      .text("Incidents by year");
     this.svg = this.div.append("svg")
       .attr("width", width)
       .attr("height", height);

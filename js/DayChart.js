@@ -14,9 +14,9 @@ class DayChart {
     let width = 500;
     let height = 100;
 
-    parent.append("h2")
-      .text("Incidents by day");
     this.div = parent.append("div");
+    this.div.append("h2")
+      .text("Incidents by day");
     this.svg = this.div.append("svg")
       .attr("width", width)
       .attr("height", height);

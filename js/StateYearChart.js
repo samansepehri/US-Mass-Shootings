@@ -16,10 +16,9 @@ class StateYearChart {
     this.width = width;
     this.height = height;
 
-    parent.append("h2")
-      .text("States through time");
-
     this.div = parent.append("div");
+    this.div.append("h2")
+      .text("States through time");
     this.svg = this.div.append("svg")
       .attr("width", width)
       .attr("height", height);
