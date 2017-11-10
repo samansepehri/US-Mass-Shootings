@@ -7,16 +7,16 @@ function loadData(path) {
   });
 }
 
-let tileMapData = {
+var tileMapData = {
   metadata: {
-    rowCount: 5,
-    colCount: 5
+    rowCount: 8,
+    colCount: 12
   },
   data: [
     {
       row: 1,
       col: 0,
-      name: "A",
+      name: "0",
       incidentCount: 1
     },
     {
@@ -32,15 +32,15 @@ let tileMapData = {
       incidentCount: 3
     },
     {
-      row: 2,
-      col: 2,
+      row: 4,
+      col: 7,
       name: "B",
       incidentCount: 2
     }
   ]
 }
 
-let incidentTableData = [
+let incidentTableData  = [
   {
     title: "title A",
     date: "01/01/01",
@@ -172,7 +172,22 @@ async function init() {
   let yearChartData = await loadData("data/data.json");
   yearChart.update(yearChartData);
 
-  tileMap.updateMap(tileMapData);
+  d3.csv("data/MSDV5P.csv", function (error, data){
+    d3.csv("data/states.csv", function (error, states){
+    
+      states.forEach(function(state, n) {
+        let thisState = data.filter(d => d.State == state.Abbreviation);
+        let incidentCount = 0;
+        thisState.forEach(function (d){
+          incidentCount += Number(d['Total victims']);
+        });
+        tileMapData.data[n] = {row: parseInt(state.Row), col:parseInt(state.Space), name: incidentCount, incidentCount: incidentCount};
+      });
+      tileMap.updateMap(tileMapData);
+    })
+  })
+  
+ 
   incidentTable.update(incidentTableData);
   dayChart.update(dayChartData);
   stateYearChart.update(stateYearChartData);
