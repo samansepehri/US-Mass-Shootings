@@ -95,7 +95,7 @@ let dayChartData = [
 let stateYearChartData = {
   metadata: {
     years: [1990, 1993, 1997, 2004],
-    stateCount: 3
+    states: ["AA", "BB", "CC"]
   },
   data: [
     {

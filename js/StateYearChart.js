@@ -24,7 +24,7 @@ class StateYearChart {
       .attr("width", width)
       .attr("height", height)
       .style("overflow", "visible")
-      .style("padding-left", "10px");
+      .style("padding-left", "26px");
     
     this.gPaths = this.svg.append("g");
     this.gXAxis = this.svg.append("g");
@@ -32,8 +32,9 @@ class StateYearChart {
 
   update(data) {
     let years = data.metadata.years;
-    let stateCount = data.metadata.stateCount;
-    let yearCount = data.metadata.years.length;
+    let states = data.metadata.states;
+    let stateCount = states.length;
+    let yearCount = years.length;
     let accumulatedFractionsPerYear = [];
     for (let i = 0; i < yearCount; i++) {
       accumulatedFractionsPerYear.push([0]);
@@ -98,5 +99,22 @@ class StateYearChart {
     this.gXAxis
       .attr("transform", `translate(0, ${this.height})`)
       .call(xAxis);
+
+    // state labels
+    let stateLabel = this.svg.selectAll("text.state-label").data(states);
+    let stateLabelEnter = stateLabel.enter()
+      .append("text")
+      .classed("state-label", true);
+    stateLabel.merge(stateLabelEnter)
+      .text((d) => {
+        return d;
+      })
+      .attr("text-anchor", "end")
+      .attr("dy", "0.5em")
+      .attr("transform", (d, i) => {
+        return `translate(-4, ${yScale(
+          (accumulatedFractionsPerYear[0][i] +
+          accumulatedFractionsPerYear[0][i + 1]) * 0.5)})`;
+      })
   }
 }
