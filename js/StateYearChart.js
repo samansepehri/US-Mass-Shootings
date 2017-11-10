@@ -11,22 +11,29 @@ function numberToPathColor(i) {
 
 class StateYearChart {
   constructor(parent) {
-    let width = 500;
+    let width = 300;
     let height = 200;
     this.width = width;
     this.height = height;
 
     this.div = parent.append("div");
     this.div.append("h2")
-      .text("States through time");
+      .text("States through time")
+      .style("overflow", "visible");
     this.svg = this.div.append("svg")
       .attr("width", width)
-      .attr("height", height);
+      .attr("height", height)
+      .style("overflow", "visible")
+      .style("padding-left", "10px");
+    
+    this.gPaths = this.svg.append("g");
+    this.gXAxis = this.svg.append("g");
   }
 
   update(data) {
+    let years = data.metadata.years;
     let stateCount = data.metadata.stateCount;
-    let yearCount = data.metadata.yearCount;
+    let yearCount = data.metadata.years.length;
     let accumulatedFractionsPerYear = [];
     for (let i = 0; i < yearCount; i++) {
       accumulatedFractionsPerYear.push([0]);
@@ -48,7 +55,7 @@ class StateYearChart {
 
     // console.log(accumulatedFractionsPerYear);
     let paths = [];
-    let xScale = (x) => { return x * this.width / yearCount; }
+    let xScale = (x) => { return x * this.width / (yearCount - 1); }
     let yScale = (y) => { return y * this.height; }
     for (let i = 0; i < stateCount; i++) {
       // for each state, make a path
@@ -71,7 +78,7 @@ class StateYearChart {
       paths.push(path);
     }
 
-    let path = this.svg.selectAll("path.state-through-time").data(paths);
+    let path = this.gPaths.selectAll("path.state-through-time").data(paths);
     let pathEnter = path.enter()
       .append("path")
       .classed("state-through-time", true);
@@ -81,6 +88,15 @@ class StateYearChart {
       })
       .attr("fill", (d, i) => {
         return numberToPathColor(i);
-      })
+      });
+    
+    // axis
+    let xAxisScale = d3.scaleOrdinal()
+      .domain(years)
+      .range(years.map((d, i) => { return xScale(i); }));
+    let xAxis = d3.axisTop(xAxisScale);
+    this.gXAxis
+      .attr("transform", `translate(0, ${this.height})`)
+      .call(xAxis);
   }
 }
