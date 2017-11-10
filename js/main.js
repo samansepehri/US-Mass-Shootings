@@ -1,6 +1,6 @@
-function loadDataByYear() {
+function loadData(path) {
   return new Promise((resolve, reject) => {
-    d3.json("data/data.json", (error, data) => {
+    d3.json(path, (error, data) => {
       if (error == null) resolve(data);
       else reject(error);
     })
@@ -48,7 +48,7 @@ async function init() {
   let tileMap = new TileMap(body);
   let incidentTable = new IncidentTable(body);
   main.tileMap = tileMap;
-  let dataByYear = await loadDataByYear();
+  let dataByYear = await loadData("data/data.json");
   yearChart.update(dataByYear);
   tileMap.updateMap(tileMapData);
   incidentTable.update([
