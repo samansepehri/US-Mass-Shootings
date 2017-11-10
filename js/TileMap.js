@@ -13,17 +13,7 @@ class TileMap {
     this.tilesByName = {};
   }
 
-  updateContent(contentData) {
-    let tilesByName = this.tilesByName;
-
-    contentData.forEach((item) => {
-      let tile = tilesByName[item.state];
-      // console.log(tile);
-      tile.label.text("x");
-    });
-  }
-
-  updateMap(tileMapData) {
+  update(tileMapData) {
     let tilesByName = this.tilesByName = {};
     tileMapData.data.forEach((d) => {
       tilesByName[d.name] = {};

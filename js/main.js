@@ -15,6 +15,21 @@ function loadData(path) {
   });
 }
 
+let yearChartData = [
+  {
+    "year": 1900,
+    "incidentCount": 3
+  },
+  {
+    "year": 1950,
+    "incidentCount": 4
+  },
+  {
+    "year": 1980,
+    "incidentCount": 10
+  }
+];
+
 var tileMapData = {
   metadata: {
     rowCount: 8,
@@ -177,19 +192,26 @@ async function init() {
   let scatterPlot = new ScatterPlot(body);
   main.scatterPlot = scatterPlot;
 
-  let yearChartData = await loadData("data/data.json");
+  // let yearChartData = await loadData("data/data.json");
+  
   yearChart.update(yearChartData);
-
   d3.csv("data/MSDV5P.csv", function (error, data){
     d3.csv("data/states.csv", function (error, states){
     
       states.forEach(function(state, n) {
         let thisState = data.filter(d => d.State == state.Abbreviation);
-        let incidentCount = thisState.sum('Fatalities') + thisState.sum('Injured');
-        tileMapData.data[n] = {row: parseInt(state.Row), col:parseInt(state.Space), name: incidentCount, incidentCount: incidentCount};
+        let incidentCount = 0;
+        thisState.forEach(function (d) {
+          incidentCount += Number(d["Total victims"]);
+        });
+        tileMapData.data[n] = {
+          row: parseInt(state.Row),
+          col:parseInt(state.Space),
+          name: incidentCount,
+          incidentCount: incidentCount
+        };
       });
-
-      tileMap.updateMap(tileMapData);
+      tileMap.update(tileMapData);
     })
 
     data.forEach(function(data,n){

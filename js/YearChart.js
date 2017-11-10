@@ -38,15 +38,8 @@ class YearChart {
       })
       .attr("width", w)
       .on("click", (d, i) => {
-        main.tileMap.updateContent([
-          {
-            "state": "A",
-            "incidentCount": 90
-          },
-          {
-            "state": "B",
-            "incidentCount": 10
-          }
+        main.tileMap.update([
+          // ???
         ]);
       });
     
