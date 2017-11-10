@@ -12,7 +12,6 @@ class YearChart {
   }
 
   update(dataByYear) {
-    let d3this = d3.select(this);
     let w = 40;
     let xMargin = 5;
     let x0 = xMargin + w * 0.5;
