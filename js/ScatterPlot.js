@@ -6,15 +6,15 @@ class ScatterPlot {
     this.height = height;
 
     this.div = parent.append("div")
-      .style("padding-left", "60px")
-      .style("padding-bottom", "40px")
       .style("overflow", "visible");
     this.div.append("h2")
       .text("Scatter plot, killed-injured");
     this.svg = this.div.append("svg")
       .attr("width", width)
       .attr("height", height)
-      .style("overflow", "visible");
+      .style("overflow", "visible")
+      .style("padding-left", "50px")
+      .style("padding-bottom", "40px");
 
     this.gXAxis = this.svg.append("g");
     this.gYAxis = this.svg.append("g");
