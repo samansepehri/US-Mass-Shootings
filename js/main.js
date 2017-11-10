@@ -1,3 +1,11 @@
+Array.prototype.sum = function (prop) {
+  var total = 0
+  for ( var i = 0, _len = this.length; i < _len; i++ ) {
+      total += Number(this[i][prop]);
+  }
+  return total
+}
+
 function loadData(path) {
   return new Promise((resolve, reject) => {
     d3.json(path, (error, data) => {
@@ -177,18 +185,28 @@ async function init() {
     
       states.forEach(function(state, n) {
         let thisState = data.filter(d => d.State == state.Abbreviation);
-        let incidentCount = 0;
-        thisState.forEach(function (d){
-          incidentCount += Number(d['Total victims']);
-        });
+        let incidentCount = thisState.sum('Fatalities') + thisState.sum('Injured');
         tileMapData.data[n] = {row: parseInt(state.Row), col:parseInt(state.Space), name: incidentCount, incidentCount: incidentCount};
       });
+
       tileMap.updateMap(tileMapData);
     })
+
+    data.forEach(function(data,n){
+      if(n < 10)
+      incidentTableData[n] = {title: data.Title, date: data.Date.split('/')[2], state:data.State}
+    });
+    incidentTable.update(incidentTableData);
+    let minYear = 1966, maxYear = 2017;
+    for(y = 0; y < maxYear-minYear+1; y++){
+      let thisYear = data.filter(d => minYear+y == Number(d.Date.split('/')[2]))
+      let thisYearTotal = thisYear.sum('Fatalities') + thisYear.sum('Injured');
+      yearChartData[y] = {year: minYear+y, incidentCount: thisYearTotal};
+    }
+    yearChart.update(yearChartData);
+    
   })
   
- 
-  incidentTable.update(incidentTableData);
   dayChart.update(dayChartData);
   stateYearChart.update(stateYearChartData);
   scatterPlot.update(scatterPlotData);
