@@ -113,6 +113,24 @@ let stateYearChartData = {
   ]
 };
 
+let scatterPlotData = [
+  {
+    title: "incident 1",
+    injured: 3,
+    killed: 4
+  },
+  {
+    title: "incident 2",
+    injured: 5,
+    killed: 10
+  },
+  {
+    title: "incident 3",
+    injured: 6,
+    killed: 7
+  }
+];
+
 main = {};
 
 async function init() {
@@ -133,6 +151,9 @@ async function init() {
   let stateYearChart = new StateYearChart(body);
   main.stateYearChart = stateYearChart;
 
+  let scatterPlot = new ScatterPlot(body);
+  main.scatterPlot = scatterPlot;
+
   let yearChartData = await loadData("data/data.json");
   yearChart.update(yearChartData);
 
@@ -140,6 +161,7 @@ async function init() {
   incidentTable.update(incidentTableData);
   dayChart.update(dayChartData);
   stateYearChart.update(stateYearChartData);
+  scatterPlot.update(scatterPlotData);
 }
 
 init();
