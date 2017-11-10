@@ -128,6 +128,21 @@ let scatterPlotData = [
     title: "incident 3",
     injured: 6,
     killed: 7
+  },
+  {
+    title: "incident 4",
+    injured: 2,
+    killed: 2
+  },
+  {
+    title: "incident 5",
+    injured: 3,
+    killed: 3
+  },
+  {
+    title: "incident 5",
+    injured: 1,
+    killed: 1
   }
 ];
 
