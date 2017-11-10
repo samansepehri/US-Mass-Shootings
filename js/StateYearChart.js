@@ -1,3 +1,14 @@
+let pathColors = [
+  "#456f98",
+  "#73a84f",
+  "#fab14d",
+  "#f9f18c"
+];
+
+function numberToPathColor(i) {
+  return pathColors[i % pathColors.length];
+}
+
 class StateYearChart {
   constructor(parent) {
     let width = 500;
@@ -70,8 +81,7 @@ class StateYearChart {
         return d;
       })
       .attr("fill", (d, i) => {
-        if (i % 2 == 0) return "black";
-        else return "white";
+        return numberToPathColor(i);
       })
   }
 }
