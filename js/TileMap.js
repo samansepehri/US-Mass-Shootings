@@ -5,10 +5,12 @@ class TileMap {
     this.width = width;
     this.height = height;
 
-    this.div = parent.append("div");
+    this.div = parent.append("div")
+      .style("overflow", "visible");
     this.svg = this.div.append("svg")
       .attr("width", width)
-      .attr("height", height);
+      .attr("height", height)
+      .attr("overflow", "visible");
 
     this.tilesByName = {};
   }
@@ -36,7 +38,9 @@ class TileMap {
       .data(tileMapData.data);
     let rectEnter = rect.enter()
       .append("rect")
-      .classed("tile", true);
+      .classed("tile", true)
+      .style("stroke-width", "1px")
+      .style("stroke", "#666666");
     rect.merge(rectEnter)
       .each(function(d) {
         tilesByName[d.name].rect = d3.select(this);
