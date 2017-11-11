@@ -31,84 +31,6 @@ function loadData(path) {
   });
 }
 
-let dayChartData = [
-  {
-    incidentCount: 1
-  },
-  {
-    incidentCount: 30
-  },
-  {
-    incidentCount: 44
-  },
-  {
-    incidentCount: 3
-  },
-  {
-    incidentCount: 1
-  },
-  {
-    incidentCount: 20
-  },
-  {
-    incidentCount: 10
-  }
-];
-
-let stateYearChartData = {
-  metadata: {
-    years: [1990, 1993, 1997, 2004],
-    states: ["AA", "BB", "CC"]
-  },
-  data: [
-    {
-      state: "AA",
-      incidentCountFraction: [0.2, 0.4, 0.1, 0.3]
-    },
-    {
-      state: "BB",
-      incidentCountFraction: [0.1, 0.3, 0.8, 0.3]
-    },
-    {
-      state: "CC",
-      incidentCountFraction: [0.7, 0.3, 0.1, 0.4]
-    }
-  ]
-};
-
-let scatterPlotData = [
-  {
-    title: "incident 1",
-    injured: 3,
-    killed: 4
-  },
-  {
-    title: "incident 2",
-    injured: 5,
-    killed: 10
-  },
-  {
-    title: "incident 3",
-    injured: 6,
-    killed: 7
-  },
-  {
-    title: "incident 4",
-    injured: 2,
-    killed: 2
-  },
-  {
-    title: "incident 5",
-    injured: 3,
-    killed: 3
-  },
-  {
-    title: "incident 5",
-    injured: 1,
-    killed: 1
-  }
-];
-
 main = {};
 
 async function init() {
@@ -199,6 +121,11 @@ async function init() {
 
     let incidentTableData = [];
     let scatterPlotData = [];
+    let dayChartData = [];
+    let stateYearChartData = {
+      metadata: {},
+      data: []
+    };
 
     data.forEach(function(item, n) {
       // TODO do not hardcode max number of incidents
