@@ -6,9 +6,25 @@ class YearChart {
     this.height = height;
     
     this.div = parent.append("div");
-    this.div.append("h2")
-      .text("Incidents by year")
-      .attr("overflow", "visible");
+
+    let criteria = ["incidents", "injured", "killed", "total victims"];
+    
+    let div1 = this.div.append("div")
+      .style("display", "block");
+    let select = div1.append("select")
+      .on("change", () => {
+        console.log(select.property("value"))
+      });
+    div1.append("h2")
+      .text("by year")
+      .style("padding-left", "10px")
+      .style("display", "inline");
+    
+    let option = select.selectAll("option").data(criteria);
+    option.enter()
+      .append("option")
+      .text((d) => { return d; });
+
     this.svg = this.div.append("svg")
       .attr("width", width)
       .attr("height", height)
