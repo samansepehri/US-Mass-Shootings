@@ -20,8 +20,16 @@ class TileMap {
     let tileMargin = 5;
     let tileWidth = (this.width - tileMargin * (colCount - 1)) / colCount;
     let tileHeight = (this.height - tileMargin * (rowCount - 1)) / rowCount;
+
+    // TODO link criterion with rest of the visualization
+    let criterion = "incidentCount";
+    let maxNumber = 0;
+    data.data.forEach((item) => {
+      let number = item[criterion];
+      if (number > maxNumber) maxNumber = number;
+    });
     
-    let domain = [0, 600];
+    let domain = [0, maxNumber];
     let range = ["#ffffff", "#ff0000"];
     let colorScale = d3.scaleLinear()
       .domain(domain)
