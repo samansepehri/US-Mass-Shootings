@@ -1,8 +1,8 @@
-# US Mass-Shootings (1966-2017)
+# US mass shootings (1966-2017)
 Final project for Data Visualization (Fall 2017).
 
 Topic:
-US Mass-shootings (1966-2017)
+US mass shootings (1966-2017)
 
 Team Members:
 * Junior Rojas
