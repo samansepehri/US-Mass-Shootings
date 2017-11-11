@@ -244,6 +244,7 @@ async function init() {
     }
     let criterion = "incidentCount";
     yearChart.update(main.yearChartData, criterion);
+    scatterPlot.update(scatterPlotData);    
 
     let dayNames = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
     for(i=0; i<7; i++){
@@ -255,11 +256,7 @@ async function init() {
       };
     }
     dayChart.update(dayChartData);
-
-    
   })
-  
-  scatterPlot.update(scatterPlotData);
 }
 
 init();
