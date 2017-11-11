@@ -63,10 +63,9 @@ class ScatterPlot {
     this.yLabel
       .attr("transform", `translate(${-30}, ${this.height * 0.5}) rotate(-90) `)
 
-    let radiusScale = d3.scaleLinear()
+    let colorScale = d3.scaleLinear()
       .domain([minVictims, maxVictims])
-      .range([2, 6]);
-
+      .range(["#ffeeee", "#ff0000"]);
 
     let circle = this.svg.selectAll("circle.incident-point").data(data);
     let circleEnter = circle.enter()
@@ -75,9 +74,10 @@ class ScatterPlot {
     circle.merge(circleEnter)
       .attr("cx", (d) => { return xScale(d.killed); })
       .attr("cy", (d) => { return yScale(d.injured); })
-      .attr("r", (d) => {
+      .attr("r", 2.5)
+      .attr("fill", (d) => {
         let victims = d.injured + d.killed;
-        return radiusScale(victims);
+        return colorScale(victims);
       });
   }
 }

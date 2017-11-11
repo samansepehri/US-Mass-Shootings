@@ -13,6 +13,15 @@ Array.prototype.max = function(prop){
   return Math.max.apply(Math, array);
 }
 
+function parseDate(str) {
+  let s = str.split("/");
+  return {
+    month: parseInt(s[0]),
+    day  : parseInt(s[1]),
+    year : parseInt(s[2])
+  }
+}
+
 function loadData(path) {
   return new Promise((resolve, reject) => {
     d3.json(path, (error, data) => {
@@ -21,49 +30,6 @@ function loadData(path) {
     })
   });
 }
-
-let yearChartData = [
-  {
-    "year": 1900,
-    "incidentCount": 3
-  },
-  {
-    "year": 1950,
-    "incidentCount": 4
-  },
-  {
-    "year": 1980,
-    "incidentCount": 10
-  }
-];
-
-let incidentTableData  = [
-  {
-    title: "title A",
-    date: "01/01/01",
-    state: "AA"
-  },
-  {
-    title: "title B",
-    date: "02/02/02",
-    state: "BB"
-  },
-  {
-    title: "title C",
-    date: "02/02/02",
-    state: "CC"
-  },
-  {
-    title: "title D",
-    date: "02/02/02",
-    state: "BB"
-  },
-  {
-    title: "title E",
-    date: "02/02/02",
-    state: "DD"
-  }
-];
 
 let dayChartData = [
   {
@@ -166,8 +132,6 @@ async function init() {
   let scatterPlot = new ScatterPlot(body);
   main.scatterPlot = scatterPlot;
 
-  // let yearChartData = await loadData("data/data.json");
-
   let tileMapData = {
     metadata: {
       rowCount: 8,
@@ -233,35 +197,67 @@ async function init() {
       stateYearChart.update(stateYearChartData);
     })
 
-    data.forEach(function(data,n){
-      if(n < 10)
-      incidentTableData[n] = {
-        title: data.Title,
-        date: data.Date.split('/')[2],
-        state: data.State
+    let incidentTableData = [];
+    let scatterPlotData = [];
+
+    data.forEach(function(item, n) {
+      // TODO do not hardcode max number of incidents
+      let killed = parseInt(item.Fatalities);
+      let injured = parseInt(item.Injured);
+
+      if (n < 10) {
+        incidentTableData.push({
+          title: item.Title,
+          date: parseDate(item.Date),
+          state: item.State,
+          location: item.Location,
+          killed: killed,
+          injured: injured,
+          area: item["Incident Area"]
+        });
+      }
+
+      // TODO do not hardcode criterion to filter incidents
+      if (injured + killed < 60) {
+        scatterPlotData.push({
+          title: item.Title,
+          injured: injured,
+          killed: killed
+        });
       }
     });
     incidentTable.update(incidentTableData);
-
+    
+    main.yearChartData = [];
     for(y = 0; y < years.length; y++){
       let thisYear = data.filter(d => years[y] == Number(d.Date.split('/')[2]));
-      let thisYearTotal = thisYear.sum('Fatalities') + thisYear.sum('Injured');
-      yearChartData[y] = {year: years[y], incidentCount: thisYearTotal};
+      let killed = thisYear.sum("Fatalities");
+      let injured = thisYear.sum("Injured");
+      let totalVictims = killed + injured;
+      main.yearChartData.push({
+        year: years[y],
+        incidentCount: thisYear.length,
+        killedCount: killed,
+        injuredCount: injured,
+        totalVictimCount: totalVictims
+      });
     }
-    yearChart.update(yearChartData);
+    let criterion = "incidentCount";
+    yearChart.update(main.yearChartData, criterion);
 
     let dayNames = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
     for(i=0; i<7; i++){
       let thisDay = data.filter(item => dayNames[i] == item.DayOfTheWeek);
-      let incidentCount = thisDay.sum('Fatalities') + thisDay.sum('Injured');
-      dayChartData[i] = {incidentCount: incidentCount};
+      let totalVictims = thisDay.sum('Fatalities') + thisDay.sum('Injured');
+      dayChartData[i] = {
+        totalVictims: totalVictims,
+        incidentCount: thisDay.length
+      };
     }
     dayChart.update(dayChartData);
 
     
   })
-  
-  
   
   scatterPlot.update(scatterPlotData);
 }
