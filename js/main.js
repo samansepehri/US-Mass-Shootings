@@ -10,7 +10,7 @@ Array.prototype.max = function(prop){
   for ( let i = 0, _len = this.length; i < _len; i++ ) {
     array[i] = Number(this[i][prop]);
   } 
-  return Math.max.apply(Math, array);;
+  return Math.max.apply(Math, array);
 }
 
 function loadData(path) {
@@ -176,9 +176,17 @@ async function init() {
     data: [
     ]
   };
+
+  let minYear = 1966, maxYear = 2017;
+  let years = new Array();
+  for(y = 0; y < maxYear-minYear+1; y++){
+    years[y] = minYear+y; 
+  }
+  let states = new Array();
+
   d3.csv("data/MSDV5P.csv", function (error, data) {
-    d3.csv("data/states.csv", function (error, states) {
-      states.forEach(function(state, n) {
+    d3.csv("data/states.csv", function (error, thisState) {
+      thisState.forEach(function(state, n) {
         let thisState = data.filter(d => d.State == state.Abbreviation);
         let incidentCount = 0;
         thisState.forEach(function (d) {
@@ -190,8 +198,39 @@ async function init() {
           name: state.Abbreviation,
           incidentCount: incidentCount
         };
+        states[n] = state.Abbreviation;
       });
       tileMap.update(tileMapData);
+      
+      let selectedYears = years.slice(years.length - 5);
+      let selectedStates = states.slice(states.length - 10); //states.length - 5
+
+      stateYearChartData.metadata.years = selectedYears;
+      stateYearChartData.metadata.states = selectedStates;
+
+      let stateYearIncidentCount = new Array();
+      selectedStates.forEach(function (state, sInd) {
+        selectedYears.forEach(function (year, yInd) {
+           let tempData = data.filter(d =>
+            d.State == selectedStates[sInd] &&
+            Number(d.Date.split('/')[2]) == year);
+            stateYearIncidentCount[sInd * selectedYears.length + yInd] = {state: state,
+                                                                          year: year,
+                                                                          incidentCount: tempData.length};
+        });
+        stateYearChartData.data[sInd] = { state: state, incidentCountFraction: 0.2 }
+      })
+      selectedStates.forEach(function (state, sInd) {
+        
+        let fraction =  new Array();
+        selectedYears.forEach(function (year, yInd) {
+          let totalPerYear = stateYearIncidentCount.filter(d => d.year == year).sum('incidentCount')
+          let thisStateThisYear = stateYearIncidentCount.filter(d => d.year == year && d.state == state);
+          fraction[yInd] = thisStateThisYear[0].incidentCount / totalPerYear;
+        });
+        stateYearChartData.data[sInd] = { state: state, incidentCountFraction: fraction }
+      })
+      stateYearChart.update(stateYearChartData);
     })
 
     data.forEach(function(data,n){
@@ -204,11 +243,10 @@ async function init() {
     });
     incidentTable.update(incidentTableData);
 
-    let minYear = 1966, maxYear = 2017;
-    for(y = 0; y < maxYear-minYear+1; y++){
-      let thisYear = data.filter(d => minYear+y == Number(d.Date.split('/')[2]));
+    for(y = 0; y < years.length; y++){
+      let thisYear = data.filter(d => years[y] == Number(d.Date.split('/')[2]));
       let thisYearTotal = thisYear.sum('Fatalities') + thisYear.sum('Injured');
-      yearChartData[y] = {year: minYear+y, incidentCount: thisYearTotal};
+      yearChartData[y] = {year: years[y], incidentCount: thisYearTotal};
     }
     yearChart.update(yearChartData);
 
@@ -220,12 +258,11 @@ async function init() {
     }
     dayChart.update(dayChartData);
 
-
     
   })
   
   
-  stateYearChart.update(stateYearChartData);
+  
   scatterPlot.update(scatterPlotData);
 }
 

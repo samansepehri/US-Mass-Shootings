@@ -95,7 +95,7 @@ class StateYearChart {
     let xAxisScale = d3.scaleOrdinal()
       .domain(years)
       .range(years.map((d, i) => { return xScale(i); }));
-    let xAxis = d3.axisTop(xAxisScale);
+    let xAxis = d3.axisBottom(xAxisScale);
     this.gXAxis
       .attr("transform", `translate(0, ${this.height})`)
       .call(xAxis);
