@@ -13,6 +13,15 @@ Array.prototype.max = function(prop){
   return Math.max.apply(Math, array);;
 }
 
+function parseDate(str) {
+  let s = str.split("/");
+  return {
+    month: parseInt(s[0]),
+    day  : parseInt(s[1]),
+    year : parseInt(s[2])
+  }
+}
+
 function loadData(path) {
   return new Promise((resolve, reject) => {
     d3.json(path, (error, data) => {
@@ -34,34 +43,6 @@ let yearChartData = [
   {
     "year": 1980,
     "incidentCount": 10
-  }
-];
-
-let incidentTableData  = [
-  {
-    title: "title A",
-    date: "01/01/01",
-    state: "AA"
-  },
-  {
-    title: "title B",
-    date: "02/02/02",
-    state: "BB"
-  },
-  {
-    title: "title C",
-    date: "02/02/02",
-    state: "CC"
-  },
-  {
-    title: "title D",
-    date: "02/02/02",
-    state: "BB"
-  },
-  {
-    title: "title E",
-    date: "02/02/02",
-    state: "DD"
   }
 ];
 
@@ -194,12 +175,19 @@ async function init() {
       tileMap.update(tileMapData);
     })
 
-    data.forEach(function(data,n){
-      if(n < 10)
-      incidentTableData[n] = {
-        title: data.Title,
-        date: data.Date.split('/')[2],
-        state: data.State
+    let incidentTableData = [];
+    data.forEach(function(item, n) {
+      // TODO do not hardcode max number of incidents
+      if (n < 10) {
+        incidentTableData.push({
+          title: item.Title,
+          date: parseDate(item.Date),
+          state: item.State,
+          location: item.Location,
+          killed: parseInt(item.Fatalities),
+          injured: parseInt(item.Injured),
+          area: item["Incident Area"]
+        });
       }
     });
     incidentTable.update(incidentTableData);
