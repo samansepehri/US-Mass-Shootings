@@ -10,4 +10,4 @@ Saman Sepehri
 
 [Process book](https://github.com/samansepehri/US-Mass-Shootings/blob/master/process-book.pdf)
 
-![screenshot](https://github.com/samansepehri/US-Mass-Shootings/blob/master/media/screenshot.png)
+![screenshot](media/screenshot.png)
