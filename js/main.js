@@ -167,7 +167,7 @@ async function init() {
       tileMap.update(tileMapData);
       
       let selectedYears = years.slice(years.length - 5);
-      let selectedStates = states.slice(states.length - 10); //states.length - 5
+      let selectedStates = states.slice(states.length - 10);
 
       stateYearChartData.metadata.years = selectedYears;
       stateYearChartData.metadata.states = selectedStates;
@@ -182,7 +182,6 @@ async function init() {
                                                                           year: year,
                                                                           incidentCount: tempData.length};
         });
-        stateYearChartData.data[sInd] = { state: state, incidentCountFraction: 0.2 }
       })
       selectedStates.forEach(function (state, sInd) {
         
@@ -258,7 +257,7 @@ async function init() {
 
     
   })
-  
+
   scatterPlot.update(scatterPlotData);
 }
 
