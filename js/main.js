@@ -194,7 +194,7 @@ async function init() {
 
   // let yearChartData = await loadData("data/data.json");
   
-  yearChart.update(yearChartData);
+  // yearChart.update(yearChartData);
   d3.csv("data/MSDV5P.csv", function (error, data){
     d3.csv("data/states.csv", function (error, states){
     
