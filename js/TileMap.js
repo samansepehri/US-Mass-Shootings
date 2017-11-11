@@ -1,7 +1,7 @@
 class TileMap {
   constructor(parent) {
     let width = 700;
-    let height = 300;
+    let height = 350;
     this.width = width;
     this.height = height;
 
@@ -81,8 +81,7 @@ class TileMap {
       .classed("state-number", true);
     txtNumber.merge(txtNumberEnter)
       .text((d) => {
-        if (d.number == null) return "??"
-        else return d.number;
+        return d[criterion];
       })
       .style("pointer-events", "none")
       .attr("text-anchor", "middle")

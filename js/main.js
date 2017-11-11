@@ -30,39 +30,6 @@ let yearChartData = [
   }
 ];
 
-var tileMapData = {
-  metadata: {
-    rowCount: 8,
-    colCount: 12
-  },
-  data: [
-    {
-      row: 1,
-      col: 0,
-      name: "0",
-      incidentCount: 1
-    },
-    {
-      row: 1,
-      col: 1,
-      name: "B",
-      incidentCount: 4
-    },
-    {
-      row: 1,
-      col: 2,
-      name: "C",
-      incidentCount: 3
-    },
-    {
-      row: 4,
-      col: 7,
-      name: "B",
-      incidentCount: 2
-    }
-  ]
-}
-
 let incidentTableData  = [
   {
     title: "title A",
@@ -193,11 +160,17 @@ async function init() {
   main.scatterPlot = scatterPlot;
 
   // let yearChartData = await loadData("data/data.json");
-  
-  // yearChart.update(yearChartData);
-  d3.csv("data/MSDV5P.csv", function (error, data){
-    d3.csv("data/states.csv", function (error, states){
-    
+
+  let tileMapData = {
+    metadata: {
+      rowCount: 8,
+      colCount: 12
+    },
+    data: [
+    ]
+  };
+  d3.csv("data/MSDV5P.csv", function (error, data) {
+    d3.csv("data/states.csv", function (error, states) {
       states.forEach(function(state, n) {
         let thisState = data.filter(d => d.State == state.Abbreviation);
         let incidentCount = 0;
@@ -206,8 +179,8 @@ async function init() {
         });
         tileMapData.data[n] = {
           row: parseInt(state.Row),
-          col:parseInt(state.Space),
-          name: incidentCount,
+          col: parseInt(state.Space),
+          name: state.Abbreviation,
           incidentCount: incidentCount
         };
       });
@@ -216,11 +189,15 @@ async function init() {
 
     data.forEach(function(data,n){
       if(n < 10)
-      incidentTableData[n] = {title: data.Title, date: data.Date.split('/')[2], state:data.State}
+      incidentTableData[n] = {
+        title: data.Title,
+        date: data.Date.split('/')[2],
+        state: data.State
+      }
     });
     incidentTable.update(incidentTableData);
     let minYear = 1966, maxYear = 2017;
-    for(y = 0; y < maxYear-minYear+1; y++){
+    for(y = 0; y < maxYear - minYear + 1; y++) {
       let thisYear = data.filter(d => minYear+y == Number(d.Date.split('/')[2]))
       let thisYearTotal = thisYear.sum('Fatalities') + thisYear.sum('Injured');
       yearChartData[y] = {year: minYear+y, incidentCount: thisYearTotal};
