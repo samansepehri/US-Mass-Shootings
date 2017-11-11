@@ -1,5 +1,5 @@
 # US Mass-Shootings (1966-2017)
-This repository is for the Data Visualization course 2017 final project.
+Final project for Data Visualization (Fall 2017).
 
 Topic:
 US Mass-shootings (1966-2017)
@@ -7,3 +7,5 @@ US Mass-shootings (1966-2017)
 Team Members:
 Junior Rojas
 Saman Sepehri
+
+[Process book](https://github.com/samansepehri/US-Mass-Shootings/blob/master/process-book.pdf)
