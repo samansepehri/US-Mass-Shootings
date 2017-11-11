@@ -13,6 +13,8 @@ class DayChart {
   constructor(parent) {
     let width = 500;
     let height = 100;
+    this.width = width;
+    this.height = height;
 
     this.div = parent.append("div");
     this.div.append("h2")
@@ -26,12 +28,12 @@ class DayChart {
     let w = 40;
     let xMargin = 5;
     let x0 = xMargin + w * 0.5;
-    let y0Bar = 30;
-    let y0Label = 50;
+    let y0Bar = this.height - 50;
+    let y0Label = this.height - 20;
 
     let scaleIncidentCount = d3.scaleLinear()
     .domain([0, data.max('incidentCount')])
-    .range([0, 100]);
+    .range([0, y0Bar]);
 
     let rect = this.svg.selectAll("rect.day-bar")
       .data(data);
