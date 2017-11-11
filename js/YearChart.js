@@ -1,21 +1,22 @@
 class YearChart {
   constructor(parent) {
-    let width = 1500;
-    let height = 300;
+    let width = 700;
+    let height = 200;
     this.width = width;
     this.height = height;
     
     this.div = parent.append("div");
     this.div.append("h2")
-      .text("Incidents by year");
+      .text("Incidents by year")
+      .attr("overflow", "visible");
     this.svg = this.div.append("svg")
       .attr("width", width)
-      .attr("height", height);
+      .attr("height", height)
+      .style("overflow", "visible");
   }
 
   update(data) {
     let xMargin = 5;
-    console.log(data.length);
     let w = (this.width - xMargin * data.length) / data.length;
     let x0 = xMargin + w * 0.5;
     let y0Bar = this.height - 70;
@@ -38,7 +39,7 @@ class YearChart {
     rect.merge(rectEnter)
       .attr("transform", (d, i) => {
         return `translate(
-        ${x0 + i * (xMargin + w) - w * 0.5},
+        ${x0 + i * (xMargin + w) - w},
         ${y0Bar - scaleIncidentCount(d.incidentCount)})`;
       })
       .attr("fill", "black")
@@ -56,17 +57,19 @@ class YearChart {
       .data(data);
     let yearLabelEnter = yearLabel.enter()
       .append("text")
-      .classed("year-label", true);
+      .classed("year-label", true)
     
     yearLabel.merge(yearLabelEnter)
       .text((d) => {
         return d.year;
       })
       .attr("text-anchor", "middle")
+      .style("font-size", "0.9em")
       .attr("transform", (d, i) => {
         return `translate(
         ${x0 + i * (xMargin + w)},
-        ${y0Label})`;
+        ${y0Label})
+        rotate(-90)`;
       });
   }
 }
