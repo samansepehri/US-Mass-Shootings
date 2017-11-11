@@ -31,21 +31,6 @@ function loadData(path) {
   });
 }
 
-let yearChartData = [
-  {
-    "year": 1900,
-    "incidentCount": 3
-  },
-  {
-    "year": 1950,
-    "incidentCount": 4
-  },
-  {
-    "year": 1980,
-    "incidentCount": 10
-  }
-];
-
 let dayChartData = [
   {
     incidentCount: 1
@@ -147,8 +132,6 @@ async function init() {
   let scatterPlot = new ScatterPlot(body);
   main.scatterPlot = scatterPlot;
 
-  // let yearChartData = await loadData("data/data.json");
-
   let tileMapData = {
     metadata: {
       rowCount: 8,
@@ -192,13 +175,25 @@ async function init() {
     });
     incidentTable.update(incidentTableData);
 
-    let minYear = 1966, maxYear = 2017;
-    for(y = 0; y < maxYear-minYear+1; y++){
-      let thisYear = data.filter(d => minYear+y == Number(d.Date.split('/')[2]));
-      let thisYearTotal = thisYear.sum('Fatalities') + thisYear.sum('Injured');
-      yearChartData[y] = {year: minYear+y, incidentCount: thisYearTotal};
+    let minYear = 1966;
+    let maxYear = 2017;
+    let yearChartData = [];
+    for (y = 0; y < maxYear - minYear + 1; y++) {
+      let thisYear = data.filter(d => minYear + y == Number(d.Date.split('/')[2]));
+      let killed = thisYear.sum("Fatalities");
+      let injured = thisYear.sum("Injured");
+      let totalVictims = killed + injured;
+      yearChartData.push({
+        year: minYear + y,
+        incidentCount: thisYear.length,
+        killedCount: killed,
+        injuredCount: injured,
+        totalVictimCount: totalVictims
+      });
     }
-    yearChart.update(yearChartData);
+    main.yearChartData = yearChartData;
+    let criterion = "incidentCount";
+    yearChart.update(yearChartData, criterion);
 
     let dayNames = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
     for(i=0; i<7; i++){

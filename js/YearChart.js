@@ -7,20 +7,27 @@ class YearChart {
     
     this.div = parent.append("div");
 
-    let criteria = ["incidents", "injured", "killed", "total victims"];
+    let criterionLabels = ["incidents", "injured", "killed", "total victims"];
+    let criterionValues = ["incidentCount", "injuredCount", "killedCount", "totalVictimCount"];
+    let critLabelToVal = {};
+    criterionLabels.forEach((item, i) => {
+      critLabelToVal[item] = criterionValues[i];
+    });
     
     let div1 = this.div.append("div")
       .style("display", "block");
     let select = div1.append("select")
       .on("change", () => {
-        console.log(select.property("value"))
+        let criterion = critLabelToVal[select.property("value")];
+        console.log(criterion);
+        this.update(main.yearChartData, criterion);
       });
     div1.append("h2")
       .text("by year")
       .style("padding-left", "10px")
       .style("display", "inline");
     
-    let option = select.selectAll("option").data(criteria);
+    let option = select.selectAll("option").data(criterionLabels);
     option.enter()
       .append("option")
       .text((d) => { return d; });
@@ -31,7 +38,7 @@ class YearChart {
       .style("overflow", "visible");
   }
 
-  update(data) {
+  update(data, criterion) {
     let xMargin = 5;
     let w = (this.width - xMargin * data.length) / data.length;
     let x0 = xMargin + w * 0.5;
@@ -40,7 +47,7 @@ class YearChart {
 
     let maxIncidentCount = 0;
     data.forEach((item) => {
-      if (item.incidentCount > maxIncidentCount) maxIncidentCount = item.incidentCount;
+      if (item[criterion] > maxIncidentCount) maxIncidentCount = item[criterion];
     });
 
     let scaleIncidentCount = (incidentCount) => {
@@ -56,11 +63,11 @@ class YearChart {
       .attr("transform", (d, i) => {
         return `translate(
         ${x0 + i * (xMargin + w) - w},
-        ${y0Bar - scaleIncidentCount(d.incidentCount)})`;
+        ${y0Bar - scaleIncidentCount(d[criterion])})`;
       })
       .attr("fill", "black")
       .attr("height", (d) => {
-        return scaleIncidentCount(d.incidentCount)
+        return scaleIncidentCount(d[criterion])
       })
       .attr("width", w)
       .on("click", (d, i) => {
