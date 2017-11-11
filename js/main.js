@@ -213,8 +213,11 @@ async function init() {
     let dayNames = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
     for(i=0; i<7; i++){
       let thisDay = data.filter(item => dayNames[i] == item.DayOfTheWeek);
-      let incidentCount = thisDay.sum('Fatalities') + thisDay.sum('Injured');
-      dayChartData[i] = {incidentCount: incidentCount};
+      let totalVictims = thisDay.sum('Fatalities') + thisDay.sum('Injured');
+      dayChartData[i] = {
+        totalVictims: totalVictims,
+        incidentCount: thisDay.length
+      };
     }
     dayChart.update(dayChartData);
   });  
