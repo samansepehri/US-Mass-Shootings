@@ -28,9 +28,11 @@ class DayChart {
     let x0 = xMargin + w * 0.5;
     let y0Bar = 30;
     let y0Label = 50;
-    let scaleIncidentCount = (incidentCount) => {
-      return incidentCount * 3;
-    }
+
+    let scaleIncidentCount = d3.scaleLinear()
+    .domain([0, data.max('incidentCount')])
+    .range([0, 100]);
+
     let rect = this.svg.selectAll("rect.day-bar")
       .data(data);
     let rectEnter = rect.enter()

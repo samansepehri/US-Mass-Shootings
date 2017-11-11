@@ -1,9 +1,16 @@
 Array.prototype.sum = function (prop) {
-  var total = 0
-  for ( var i = 0, _len = this.length; i < _len; i++ ) {
+  let total = 0
+  for ( let i = 0, _len = this.length; i < _len; i++ ) {
       total += Number(this[i][prop]);
   }
   return total
+}
+Array.prototype.max = function(prop){
+  let array = new Array(7);
+  for ( let i = 0, _len = this.length; i < _len; i++ ) {
+    array[i] = Number(this[i][prop]);
+  } 
+  return Math.max.apply(Math, array);;
 }
 
 function loadData(path) {
@@ -207,7 +214,7 @@ async function init() {
         tileMapData.data[n] = {
           row: parseInt(state.Row),
           col:parseInt(state.Space),
-          name: incidentCount,
+          name: state.Abbreviation,
           incidentCount: incidentCount
         };
       });
@@ -219,17 +226,28 @@ async function init() {
       incidentTableData[n] = {title: data.Title, date: data.Date.split('/')[2], state:data.State}
     });
     incidentTable.update(incidentTableData);
+
     let minYear = 1966, maxYear = 2017;
     for(y = 0; y < maxYear-minYear+1; y++){
-      let thisYear = data.filter(d => minYear+y == Number(d.Date.split('/')[2]))
+      let thisYear = data.filter(d => minYear+y == Number(d.Date.split('/')[2]));
       let thisYearTotal = thisYear.sum('Fatalities') + thisYear.sum('Injured');
       yearChartData[y] = {year: minYear+y, incidentCount: thisYearTotal};
     }
     yearChart.update(yearChartData);
+
+    let dayNames = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+    for(i=0; i<7; i++){
+      let thisDay = data.filter(item => dayNames[i] == item.DayOfTheWeek);
+      let incidentCount = thisDay.sum('Fatalities') + thisDay.sum('Injured');
+      dayChartData[i] = {incidentCount: incidentCount};
+    }
+    dayChart.update(dayChartData);
+
+
     
   })
   
-  dayChart.update(dayChartData);
+  
   stateYearChart.update(stateYearChartData);
   scatterPlot.update(scatterPlotData);
 }
