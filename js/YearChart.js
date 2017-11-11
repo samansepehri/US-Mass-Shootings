@@ -1,6 +1,6 @@
 class YearChart {
   constructor(parent) {
-    let width = 700;
+    let width = 950;
     let height = 200;
     this.width = width;
     this.height = height;

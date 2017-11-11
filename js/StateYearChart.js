@@ -11,15 +11,19 @@ function numberToPathColor(i) {
 
 class StateYearChart {
   constructor(parent) {
-    let width = 300;
+    let width = 250;
     let height = 200;
     this.width = width;
     this.height = height;
 
-    this.div = parent.append("div");
+    this.div = parent.append("div")
+      .style("margin-right", "50px")
+      .style("display", "inline-block")
+      .style("height", "500px")
+      .style("overflow", "visible");
     this.div.append("h2")
       .text("States through time")
-      .style("overflow", "visible");
+      .style("overflow", "visible")
     this.svg = this.div.append("svg")
       .attr("width", width)
       .attr("height", height)

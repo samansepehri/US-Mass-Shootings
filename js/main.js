@@ -45,13 +45,14 @@ async function init() {
   let incidentTable = new IncidentTable(body);
   main.incidentTable = incidentTable;
 
-  let dayChart = new DayChart(body);
+  let div1 = body.append("div").style("display", "inline");
+  let dayChart = new DayChart(div1);
   main.dayChart = dayChart;
 
-  let stateYearChart = new StateYearChart(body);
+  let stateYearChart = new StateYearChart(div1);
   main.stateYearChart = stateYearChart;
 
-  let scatterPlot = new ScatterPlot(body);
+  let scatterPlot = new ScatterPlot(div1);
   main.scatterPlot = scatterPlot;
 
   let tileMapData = {
