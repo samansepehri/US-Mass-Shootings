@@ -159,21 +159,36 @@ async function init() {
     })
 
     let incidentTableData = [];
+    let scatterPlotData = [];
+
     data.forEach(function(item, n) {
       // TODO do not hardcode max number of incidents
+      let killed = parseInt(item.Fatalities);
+      let injured = parseInt(item.Injured);
+
       if (n < 10) {
         incidentTableData.push({
           title: item.Title,
           date: parseDate(item.Date),
           state: item.State,
           location: item.Location,
-          killed: parseInt(item.Fatalities),
-          injured: parseInt(item.Injured),
+          killed: killed,
+          injured: injured,
           area: item["Incident Area"]
+        });
+      }
+
+      // TODO do not hardcode criterion to filter incidents
+      if (injured + killed < 60) {
+        scatterPlotData.push({
+          title: item.Title,
+          injured: injured,
+          killed: killed
         });
       }
     });
     incidentTable.update(incidentTableData);
+    scatterPlot.update(scatterPlotData);
 
     let minYear = 1966;
     let maxYear = 2017;
@@ -202,14 +217,9 @@ async function init() {
       dayChartData[i] = {incidentCount: incidentCount};
     }
     dayChart.update(dayChartData);
-
-
-    
-  })
-  
+  });  
   
   stateYearChart.update(stateYearChartData);
-  scatterPlot.update(scatterPlotData);
 }
 
 init();
