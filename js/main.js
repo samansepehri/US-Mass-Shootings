@@ -37,6 +37,18 @@ function loadData(path) {
 
 main = {};
 
+main.updateYearRange = function(minYear, maxYear) {
+  l = main.allIncidents.filter((incident) => {
+    let year = incident.Date.split('/')[2];
+    return minYear <= year && year <= maxYear;
+  });
+  console.log(l.length);
+}
+
+main.updateCriterion = function(criterion) {
+  main.criterion = criterion;
+}
+
 async function init() {
   let body = d3.select("body");
   
@@ -76,17 +88,36 @@ async function init() {
     data: []
   };
 
-  let criterion = "incidentCount";
+  main.criterion = "incidentCount";
+  let criterion = main.criterion;
 
   let minYear = 1966, maxYear = 2017;
   let years = new Array();
   for (let y = 0; y < maxYear - minYear + 1; y++) {
-    years[y] = minYear + y; 
+    years[y] = minYear + y;
   }
   let states = new Array();
   
   let data = await loadData("data/MSDV5P.csv");
   let statesData = await loadData("data/states.csv");
+
+  main.allIncidents = data;
+
+  main.yearChartData = [];
+  for (let y = 0; y < years.length; y++) {
+    let thisYear = data.filter(d => years[y] == Number(d.Date.split('/')[2]));
+    let killed = thisYear.sum("Fatalities");
+    let injured = thisYear.sum("Injured");
+    let totalVictims = killed + injured;
+    main.yearChartData.push({
+      year: years[y],
+      incidentCount: thisYear.length,
+      killedCount: killed,
+      injuredCount: injured,
+      totalVictimCount: totalVictims
+    });
+  }
+  yearChart.update(main.yearChartData, criterion);
 
   statesData.forEach(function(state, i) {
     let stateIncidents = data.filter(d => d.State == state.Abbreviation);
@@ -105,7 +136,7 @@ async function init() {
       incidentCount: incidentCount,
       injuredCount: injuredCount,
       killedCount: killedCount,
-      victimCount: injuredCount + killedCount
+      totalVictimCount: injuredCount + killedCount
     };
     states[i] = state.Abbreviation;
   });
@@ -169,22 +200,7 @@ async function init() {
     }
   });
   incidentTable.update(incidentTableData);
-  
-  main.yearChartData = [];
-  for (let y = 0; y < years.length; y++) {
-    let thisYear = data.filter(d => years[y] == Number(d.Date.split('/')[2]));
-    let killed = thisYear.sum("Fatalities");
-    let injured = thisYear.sum("Injured");
-    let totalVictims = killed + injured;
-    main.yearChartData.push({
-      year: years[y],
-      incidentCount: thisYear.length,
-      killedCount: killed,
-      injuredCount: injured,
-      totalVictimCount: totalVictims
-    });
-  }
-  yearChart.update(main.yearChartData, criterion);
+
   scatterPlot.update(scatterPlotData);
 
   let dayNames = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];

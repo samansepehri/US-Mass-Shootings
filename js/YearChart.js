@@ -21,34 +21,7 @@ class YearChart {
         let criterion = critLabelToVal[select.property("value")];
         console.log(criterion);
         this.update(main.yearChartData, criterion);
-        
-        main.tileMapData.data = []
-        d3.csv("data/MSDV5P.csv", function (error, data) {
-          d3.csv("data/states.csv", function (error, statesData) {
-            statesData.forEach(function(state, i) {
-              let stateIncidents = data.filter(d => d.State == state.Abbreviation);
-              let incidentCount = 0;
-              let injuredCount = 0;
-              let killedCount = 0;
-              stateIncidents.forEach(function (d) {
-                incidentCount++;
-                injuredCount += Number(d["Injured"]);
-                killedCount += Number(d["Fatalities"]);
-              });
-              main.tileMapData.data.push({
-                row: parseInt(state.Row),
-                col:parseInt(state.Space),
-                name: state.Abbreviation,
-                incidentCount: incidentCount,
-                injuredCount: injuredCount,
-                killedCount: killedCount,
-                totalVictimCount: injuredCount + killedCount
-              });
-              // states[i] = state.Abbreviation;
-            });
-            main.tileMap.update(main.tileMapData, criterion);
-          });
-        });
+        main.tileMap.update(main.tileMapData, criterion);
       });
     div1.append("h2")
       .text("by year")
