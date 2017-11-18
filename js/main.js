@@ -60,9 +60,11 @@ async function init() {
       rowCount: 8,
       colCount: 12
     },
-    data: [
-    ]
+    data: []
   };
+  main.tileMapData = tileMapData;
+
+  let criterion = "incidentCount";
 
   let minYear = 1966, maxYear = 2017;
   let years = new Array();
@@ -72,22 +74,29 @@ async function init() {
   let states = new Array();
 
   d3.csv("data/MSDV5P.csv", function (error, data) {
-    d3.csv("data/states.csv", function (error, thisState) {
-      thisState.forEach(function(state, n) {
-        let thisState = data.filter(d => d.State == state.Abbreviation);
+    d3.csv("data/states.csv", function (error, statesData) {
+      statesData.forEach(function(state, i) {
+        let stateIncidents = data.filter(d => d.State == state.Abbreviation);
         let incidentCount = 0;
-        thisState.forEach(function (d) {
-          incidentCount += Number(d["Total victims"]);
+        let injuredCount = 0;
+        let killedCount = 0;
+        stateIncidents.forEach(function (d) {
+          incidentCount++;
+          injuredCount += Number(d["Injured"]);
+          killedCount += Number(d["Fatalities"]);
         });
-        tileMapData.data[n] = {
+        tileMapData.data[i] = {
           row: parseInt(state.Row),
           col:parseInt(state.Space),
           name: state.Abbreviation,
-          incidentCount: incidentCount
+          incidentCount: incidentCount,
+          injuredCount: injuredCount,
+          killedCount: killedCount,
+          victimCount: injuredCount + killedCount
         };
-        states[n] = state.Abbreviation;
+        states[i] = state.Abbreviation;
       });
-      tileMap.update(tileMapData);
+      tileMap.update(tileMapData, criterion);
       
       let selectedYears = years.slice(years.length - 5);
       let selectedStates = states.slice(states.length - 10); //states.length - 5
@@ -110,7 +119,6 @@ async function init() {
         stateYearChartData.data[sInd] = { state: state, incidentCountFraction: 0.2 }
       })
       selectedStates.forEach(function (state, sInd) {
-        
         let fraction =  new Array();
         selectedYears.forEach(function (year, yInd) {
           let totalPerYear = stateYearIncidentCount.filter(d => d.year == year).sum('incidentCount')
@@ -172,7 +180,6 @@ async function init() {
         totalVictimCount: totalVictims
       });
     }
-    let criterion = "incidentCount";
     yearChart.update(main.yearChartData, criterion);
     scatterPlot.update(scatterPlotData);
 
