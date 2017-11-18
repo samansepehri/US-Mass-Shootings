@@ -24,9 +24,13 @@ function parseDate(str) {
 
 function loadData(path) {
   return new Promise((resolve, reject) => {
-    d3.json(path, (error, data) => {
-      if (error == null) resolve(data);
-      else reject(error);
+    d3.csv(path, (error, data) => {
+      if (error == null) {
+        resolve(data);
+      }
+      else {
+        reject(error);
+      }
     })
   });
 }
@@ -64,6 +68,14 @@ async function init() {
   };
   main.tileMapData = tileMapData;
 
+  let incidentTableData = [];
+  let scatterPlotData = [];
+  let dayChartData = [];
+  let stateYearChartData = {
+    metadata: {},
+    data: []
+  };
+
   let criterion = "incidentCount";
 
   let minYear = 1966, maxYear = 2017;
@@ -72,128 +84,119 @@ async function init() {
     years[y] = minYear + y; 
   }
   let states = new Array();
+  
+  let data = await loadData("data/MSDV5P.csv");
+  let statesData = await loadData("data/states.csv");
 
-  d3.csv("data/MSDV5P.csv", function (error, data) {
-    d3.csv("data/states.csv", function (error, statesData) {
-      statesData.forEach(function(state, i) {
-        let stateIncidents = data.filter(d => d.State == state.Abbreviation);
-        let incidentCount = 0;
-        let injuredCount = 0;
-        let killedCount = 0;
-        stateIncidents.forEach(function (d) {
-          incidentCount++;
-          injuredCount += Number(d["Injured"]);
-          killedCount += Number(d["Fatalities"]);
-        });
-        tileMapData.data[i] = {
-          row: parseInt(state.Row),
-          col:parseInt(state.Space),
-          name: state.Abbreviation,
-          incidentCount: incidentCount,
-          injuredCount: injuredCount,
-          killedCount: killedCount,
-          victimCount: injuredCount + killedCount
-        };
-        states[i] = state.Abbreviation;
-      });
-      tileMap.update(tileMapData, criterion);
-      
-      let selectedYears = years.slice(years.length - 5);
-      let selectedStates = states.slice(states.length - 10); //states.length - 5
-
-      stateYearChartData.metadata.years = selectedYears;
-      stateYearChartData.metadata.states = selectedStates;
-
-      let stateYearIncidentCount = new Array();
-      selectedStates.forEach(function (state, sInd) {
-        selectedYears.forEach(function (year, yInd) {
-           let tempData = data.filter(d =>
-            d.State == selectedStates[sInd] &&
-            Number(d.Date.split('/')[2]) == year);
-            stateYearIncidentCount[sInd * selectedYears.length + yInd] = {
-              state: state,
-              year: year,
-              incidentCount: tempData.length
-            };
-        });
-        stateYearChartData.data[sInd] = { state: state, incidentCountFraction: 0.2 }
-      })
-      selectedStates.forEach(function (state, sInd) {
-        let fraction =  new Array();
-        selectedYears.forEach(function (year, yInd) {
-          let totalPerYear = stateYearIncidentCount.filter(d => d.year == year).sum('incidentCount')
-          let thisStateThisYear = stateYearIncidentCount.filter(d => d.year == year && d.state == state);
-          fraction[yInd] = thisStateThisYear[0].incidentCount / totalPerYear;
-        });
-        stateYearChartData.data[sInd] = { state: state, incidentCountFraction: fraction }
-      })
-      stateYearChart.update(stateYearChartData);
-    })
-
-    let incidentTableData = [];
-    let scatterPlotData = [];
-    let dayChartData = [];
-    let stateYearChartData = {
-      metadata: {},
-      data: []
-    };
-
-    data.forEach(function(item, n) {
-      // TODO do not hardcode max number of incidents
-      let killed = parseInt(item.Fatalities);
-      let injured = parseInt(item.Injured);
-
-      if (n < 10) {
-        incidentTableData.push({
-          title: item.Title,
-          date: parseDate(item.Date),
-          state: item.State,
-          location: item.Location,
-          killed: killed,
-          injured: injured,
-          area: item["Incident Area"]
-        });
-      }
-
-      // TODO do not hardcode criterion to filter incidents
-      if (injured + killed < 60) {
-        scatterPlotData.push({
-          title: item.Title,
-          injured: injured,
-          killed: killed
-        });
-      }
+  statesData.forEach(function(state, i) {
+    let stateIncidents = data.filter(d => d.State == state.Abbreviation);
+    let incidentCount = 0;
+    let injuredCount = 0;
+    let killedCount = 0;
+    stateIncidents.forEach(function (d) {
+      incidentCount++;
+      injuredCount += Number(d["Injured"]);
+      killedCount += Number(d["Fatalities"]);
     });
-    incidentTable.update(incidentTableData);
-    
-    main.yearChartData = [];
-    for (let y = 0; y < years.length; y++) {
-      let thisYear = data.filter(d => years[y] == Number(d.Date.split('/')[2]));
-      let killed = thisYear.sum("Fatalities");
-      let injured = thisYear.sum("Injured");
-      let totalVictims = killed + injured;
-      main.yearChartData.push({
-        year: years[y],
-        incidentCount: thisYear.length,
-        killedCount: killed,
-        injuredCount: injured,
-        totalVictimCount: totalVictims
+    tileMapData.data[i] = {
+      row: parseInt(state.Row),
+      col:parseInt(state.Space),
+      name: state.Abbreviation,
+      incidentCount: incidentCount,
+      injuredCount: injuredCount,
+      killedCount: killedCount,
+      victimCount: injuredCount + killedCount
+    };
+    states[i] = state.Abbreviation;
+  });
+  tileMap.update(tileMapData, criterion);
+  
+  let selectedYears = years.slice(years.length - 5);
+  let selectedStates = states.slice(states.length - 10); //states.length - 5
+
+  stateYearChartData.metadata.years = selectedYears;
+  stateYearChartData.metadata.states = selectedStates;
+
+  let stateYearIncidentCount = new Array();
+  selectedStates.forEach(function (state, sInd) {
+    selectedYears.forEach(function (year, yInd) {
+        let tempData = data.filter(d =>
+        d.State == selectedStates[sInd] &&
+        Number(d.Date.split('/')[2]) == year);
+        stateYearIncidentCount[sInd * selectedYears.length + yInd] = {
+          state: state,
+          year: year,
+          incidentCount: tempData.length
+        };
+    });
+    stateYearChartData.data[sInd] = { state: state, incidentCountFraction: 0.2 }
+  })
+  selectedStates.forEach(function (state, sInd) {
+    let fraction =  new Array();
+    selectedYears.forEach(function (year, yInd) {
+      let totalPerYear = stateYearIncidentCount.filter(d => d.year == year).sum('incidentCount')
+      let thisStateThisYear = stateYearIncidentCount.filter(d => d.year == year && d.state == state);
+      fraction[yInd] = thisStateThisYear[0].incidentCount / totalPerYear;
+    });
+    stateYearChartData.data[sInd] = { state: state, incidentCountFraction: fraction }
+  })
+  stateYearChart.update(stateYearChartData);
+
+  data.forEach(function(item, n) {
+    // TODO do not hardcode max number of incidents
+    let killed = parseInt(item.Fatalities);
+    let injured = parseInt(item.Injured);
+
+    if (n < 10) {
+      incidentTableData.push({
+        title: item.Title,
+        date: parseDate(item.Date),
+        state: item.State,
+        location: item.Location,
+        killed: killed,
+        injured: injured,
+        area: item["Incident Area"]
       });
     }
-    yearChart.update(main.yearChartData, criterion);
-    scatterPlot.update(scatterPlotData);
 
-    let dayNames = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-    for (let i = 0; i < 7; i++) {
-      let thisDay = data.filter(item => dayNames[i] == item.DayOfTheWeek);
-      let totalVictims = thisDay.sum('Fatalities') + thisDay.sum('Injured');
-      dayChartData[i] = {
-        totalVictims: totalVictims,
-        incidentCount: thisDay.length
-      };
+    // TODO do not hardcode criterion to filter incidents
+    if (injured + killed < 60) {
+      scatterPlotData.push({
+        title: item.Title,
+        injured: injured,
+        killed: killed
+      });
     }
-    dayChart.update(dayChartData);
-  })
+  });
+  incidentTable.update(incidentTableData);
+  
+  main.yearChartData = [];
+  for (let y = 0; y < years.length; y++) {
+    let thisYear = data.filter(d => years[y] == Number(d.Date.split('/')[2]));
+    let killed = thisYear.sum("Fatalities");
+    let injured = thisYear.sum("Injured");
+    let totalVictims = killed + injured;
+    main.yearChartData.push({
+      year: years[y],
+      incidentCount: thisYear.length,
+      killedCount: killed,
+      injuredCount: injured,
+      totalVictimCount: totalVictims
+    });
+  }
+  yearChart.update(main.yearChartData, criterion);
+  scatterPlot.update(scatterPlotData);
+
+  let dayNames = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+  for (let i = 0; i < 7; i++) {
+    let thisDay = data.filter(item => dayNames[i] == item.DayOfTheWeek);
+    let totalVictims = thisDay.sum('Fatalities') + thisDay.sum('Injured');
+    dayChartData[i] = {
+      totalVictims: totalVictims,
+      incidentCount: thisDay.length
+    };
+  }
+  dayChart.update(dayChartData);
 }
 
 init();
