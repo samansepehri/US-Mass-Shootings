@@ -1,13 +1,13 @@
 Array.prototype.sum = function (prop) {
   let total = 0
-  for ( let i = 0, _len = this.length; i < _len; i++ ) {
+  for (let i = 0, _len = this.length; i < _len; i++) {
       total += Number(this[i][prop]);
   }
   return total
 }
 Array.prototype.max = function(prop){
   let array = new Array(7);
-  for ( let i = 0, _len = this.length; i < _len; i++ ) {
+  for (let i = 0, _len = this.length; i < _len; i++) {
     array[i] = Number(this[i][prop]);
   } 
   return Math.max.apply(Math, array);
@@ -66,8 +66,8 @@ async function init() {
 
   let minYear = 1966, maxYear = 2017;
   let years = new Array();
-  for(y = 0; y < maxYear-minYear+1; y++){
-    years[y] = minYear+y; 
+  for (let y = 0; y < maxYear - minYear + 1; y++) {
+    years[y] = minYear + y; 
   }
   let states = new Array();
 
@@ -101,9 +101,11 @@ async function init() {
            let tempData = data.filter(d =>
             d.State == selectedStates[sInd] &&
             Number(d.Date.split('/')[2]) == year);
-            stateYearIncidentCount[sInd * selectedYears.length + yInd] = {state: state,
-                                                                          year: year,
-                                                                          incidentCount: tempData.length};
+            stateYearIncidentCount[sInd * selectedYears.length + yInd] = {
+              state: state,
+              year: year,
+              incidentCount: tempData.length
+            };
         });
         stateYearChartData.data[sInd] = { state: state, incidentCountFraction: 0.2 }
       })
@@ -157,7 +159,7 @@ async function init() {
     incidentTable.update(incidentTableData);
     
     main.yearChartData = [];
-    for(y = 0; y < years.length; y++){
+    for (let y = 0; y < years.length; y++) {
       let thisYear = data.filter(d => years[y] == Number(d.Date.split('/')[2]));
       let killed = thisYear.sum("Fatalities");
       let injured = thisYear.sum("Injured");
@@ -172,10 +174,10 @@ async function init() {
     }
     let criterion = "incidentCount";
     yearChart.update(main.yearChartData, criterion);
-    scatterPlot.update(scatterPlotData);    
+    scatterPlot.update(scatterPlotData);
 
     let dayNames = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-    for(i=0; i<7; i++){
+    for (let i = 0; i < 7; i++) {
       let thisDay = data.filter(item => dayNames[i] == item.DayOfTheWeek);
       let totalVictims = thisDay.sum('Fatalities') + thisDay.sum('Injured');
       dayChartData[i] = {
