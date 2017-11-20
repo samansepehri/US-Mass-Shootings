@@ -47,6 +47,7 @@ function computeTileMapData(statesData, incidentsData) {
       injuredCount += Number(d["Injured"]);
       killedCount += Number(d["Fatalities"]);
     });
+    // console.log(state.Abbreviation, incidentCount)
     tileMapData.push({
       row: parseInt(state.Row),
       col:parseInt(state.Space),
@@ -74,8 +75,10 @@ main.updateYearRange = function(minYear, maxYear) {
     let year = incident.Date.split('/')[2];
     return minYear <= year && year <= maxYear;
   });
-  console.log(filteredData.length);
+  // console.log(filteredData)
+  // console.log(filteredData.length);
   main.tileMapData.data = computeTileMapData(main.statesData, filteredData);
+  // console.log(main.tileMapData.data);
   main.tileMap.update(main.tileMapData, main.criterion);
 }
 
@@ -131,6 +134,9 @@ async function init() {
   let statesData = await loadData("data/states.csv");
   main.statesData = statesData;
 
+  data.forEach(function(incidentData, i) {
+    incidentData.State = incidentData.State.trim();
+  });
   main.allIncidents = data;
 
   let states = [];
