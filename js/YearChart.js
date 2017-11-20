@@ -72,9 +72,7 @@ class YearChart {
       })
       .attr("width", w)
       .on("click", (d, i) => {
-        main.tileMap.update([
-          // ???
-        ]);
+        main.updateYearRange(d.year, d.year);
       });
     
     let yearLabel = this.svg.selectAll("text.year-label")

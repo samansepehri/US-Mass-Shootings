@@ -35,14 +35,41 @@ function loadData(path) {
   });
 }
 
+function computeTileMapData(statesData, incidentsData) {
+  let tileMapData = [];
+  statesData.forEach(function(state, i) {
+    let stateIncidents = incidentsData.filter(d => d.State == state.Abbreviation);
+    let incidentCount = 0;
+    let injuredCount = 0;
+    let killedCount = 0;
+    stateIncidents.forEach(function (d) {
+      incidentCount++;
+      injuredCount += Number(d["Injured"]);
+      killedCount += Number(d["Fatalities"]);
+    });
+    tileMapData.push({
+      row: parseInt(state.Row),
+      col:parseInt(state.Space),
+      name: state.Abbreviation,
+      incidentCount: incidentCount,
+      injuredCount: injuredCount,
+      killedCount: killedCount,
+      totalVictimCount: injuredCount + killedCount
+    });
+  });
+  return tileMapData;
+}
+
 main = {};
 
 main.updateYearRange = function(minYear, maxYear) {
-  l = main.allIncidents.filter((incident) => {
+  filteredData = main.allIncidents.filter((incident) => {
     let year = incident.Date.split('/')[2];
     return minYear <= year && year <= maxYear;
   });
-  console.log(l.length);
+  console.log(filteredData.length);
+  main.tileMapData.data = computeTileMapData(main.statesData, filteredData);
+  main.tileMap.update(main.tileMapData, main.criterion);
 }
 
 main.updateCriterion = function(criterion) {
@@ -96,12 +123,17 @@ async function init() {
   for (let y = 0; y < maxYear - minYear + 1; y++) {
     years[y] = minYear + y;
   }
-  let states = new Array();
-  
+
   let data = await loadData("data/MSDV5P.csv");
   let statesData = await loadData("data/states.csv");
+  main.statesData = statesData;
 
   main.allIncidents = data;
+
+  let states = [];
+  statesData.forEach(function(state, i) {
+    states.push(state.Abbreviation);
+  });
 
   main.yearChartData = [];
   for (let y = 0; y < years.length; y++) {
@@ -119,27 +151,7 @@ async function init() {
   }
   yearChart.update(main.yearChartData, criterion);
 
-  statesData.forEach(function(state, i) {
-    let stateIncidents = data.filter(d => d.State == state.Abbreviation);
-    let incidentCount = 0;
-    let injuredCount = 0;
-    let killedCount = 0;
-    stateIncidents.forEach(function (d) {
-      incidentCount++;
-      injuredCount += Number(d["Injured"]);
-      killedCount += Number(d["Fatalities"]);
-    });
-    tileMapData.data[i] = {
-      row: parseInt(state.Row),
-      col:parseInt(state.Space),
-      name: state.Abbreviation,
-      incidentCount: incidentCount,
-      injuredCount: injuredCount,
-      killedCount: killedCount,
-      totalVictimCount: injuredCount + killedCount
-    };
-    states[i] = state.Abbreviation;
-  });
+  tileMapData.data = computeTileMapData(statesData, data);
   tileMap.update(tileMapData, criterion);
   
   let selectedYears = years.slice(years.length - 5);
