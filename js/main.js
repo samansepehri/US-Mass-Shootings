@@ -62,6 +62,13 @@ function computeTileMapData(statesData, incidentsData) {
 
 main = {};
 
+main.updateCriterion = function(criterion) {
+  console.log("updating criterion");
+  main.criterion = criterion;
+  main.yearChart.update(main.yearChartData, criterion);
+  main.tileMap.update(main.tileMapData, criterion);
+}
+
 main.updateYearRange = function(minYear, maxYear) {
   filteredData = main.allIncidents.filter((incident) => {
     let year = incident.Date.split('/')[2];
@@ -70,10 +77,6 @@ main.updateYearRange = function(minYear, maxYear) {
   console.log(filteredData.length);
   main.tileMapData.data = computeTileMapData(main.statesData, filteredData);
   main.tileMap.update(main.tileMapData, main.criterion);
-}
-
-main.updateCriterion = function(criterion) {
-  main.criterion = criterion;
 }
 
 async function init() {

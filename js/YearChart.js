@@ -19,9 +19,8 @@ class YearChart {
     let select = div1.append("select")
       .on("change", () => {
         let criterion = critLabelToVal[select.property("value")];
-        console.log(criterion);
-        this.update(main.yearChartData, criterion);
-        main.tileMap.update(main.tileMapData, criterion);
+        console.log("select changed");
+        main.updateCriterion(criterion);
       });
     div1.append("h2")
       .text("by year")
