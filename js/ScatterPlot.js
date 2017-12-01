@@ -1,12 +1,13 @@
 class ScatterPlot {
   constructor(parent) {
-    let width = 200;
-    let height = 200;
+    let width = 300;
+    let height = 300;
     this.width = width;
     this.height = height;
 
     this.div = parent.append("div")
-      .style("overflow", "visible");
+      .style("overflow", "visible")
+      .style("display", "inline-block");
     this.div.append("h2")
       .text("Scatter plot, killed-injured");
     this.svg = this.div.append("svg")

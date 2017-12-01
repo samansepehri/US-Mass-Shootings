@@ -11,12 +11,14 @@ function numberToDayName(i) {
 
 class DayChart {
   constructor(parent) {
-    let width = 500;
-    let height = 100;
+    let width = 300;
+    let height = 300;
     this.width = width;
     this.height = height;
 
-    this.div = parent.append("div");
+    this.div = parent.append("div")
+      .style("margin-right", "15px")
+      .style("display", "inline-block");
     this.div.append("h2")
       .text("Incidents by day");
     this.svg = this.div.append("svg")
@@ -25,14 +27,14 @@ class DayChart {
   }
 
   update(data) {
-    let w = 40;
     let xMargin = 5;
+    let w = (this.width - xMargin * data.length) / data.length;
     let x0 = xMargin + w * 0.5;
     let y0Bar = this.height - 50;
     let y0Label = this.height - 20;
 
     let scaleIncidentCount = d3.scaleLinear()
-    .domain([0, data.max('incidentCount')])
+    .domain([0, data.max("incidentCount")])
     .range([0, y0Bar]);
 
     let rect = this.svg.selectAll("rect.day-bar")

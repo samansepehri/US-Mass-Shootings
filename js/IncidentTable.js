@@ -1,6 +1,7 @@
 class IncidentTable {
   constructor(parent) {
-    this.table = parent.append("table");
+    this.div = parent.append("div");
+    this.table = this.div.append("table");
 
     this.thead = this.table.append("thead");
     let trHead = this.thead.append("tr");
