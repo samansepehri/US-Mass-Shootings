@@ -207,10 +207,7 @@ async function init() {
   let incidentTableData = [];
   let scatterPlotData = [];
   let dayChartData = [];
-  let stateYearChartData = {
-    metadata: {},
-    data: []
-  };
+  
 
   main.criterion = "incidentCount";
   let criterion = main.criterion;
@@ -258,10 +255,10 @@ async function init() {
   let selectedYears = years.slice(years.length - 5);
   let selectedStates = states.slice(states.length - 10); //states.length - 5
 
-  stateYearChartData.metadata.years = selectedYears;
-  stateYearChartData.metadata.states = selectedStates;
+  
 
-  let stateYearIncidentCount = new Array();
+  // let stateYearIncidentCount = [];
+  /*
   selectedStates.forEach(function (state, sInd) {
     selectedYears.forEach(function (year, yInd) {
         let tempData = data.filter(d =>
@@ -284,6 +281,25 @@ async function init() {
     });
     stateYearChartData.data[sInd] = { state: state, incidentCountFraction: fraction }
   })
+  */
+  let stateYearChartData = {
+    metadata: {},
+    data: []
+  };
+  stateYearChartData.metadata.years = selectedYears;
+  stateYearChartData.metadata.states = selectedStates;
+
+  selectedStates.forEach(function (state, i) {
+    selectedYears.forEach(function(year, j) {
+      let tempData = data.filter(d =>
+        d.State == selectedStates[i] &&
+        Number(d.Date.split('/')[2]) == year);
+      stateYearChartData.data.push({
+        state: state,
+        incidentCountFraction: 0.1 // TODO compute actual value
+      });
+    });
+  });
   stateYearChart.update(stateYearChartData);
 
   main.updateYearRange(minYear, maxYear);

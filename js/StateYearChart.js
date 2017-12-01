@@ -68,18 +68,20 @@ class StateYearChart {
       // accumulatedFractionsPerYear[year][state]
       path.moveTo(
         xScale(0),
-        yScale(accumulatedFractionsPerYear[0][i]));
+        yScale(data.data[0].incidentCountFraction));
       for (let j = 1; j < yearCount; j++) {
         path.lineTo(
           xScale(j),
-          yScale(accumulatedFractionsPerYear[j][i]));
+          yScale(data.data[j].incidentCountFraction));
       }
+      /*
       for (let j = yearCount - 1; j >= 0; j--) {
         path.lineTo(
           xScale(j),
           yScale(accumulatedFractionsPerYear[j][i + 1]));
       }
-      path.closePath();
+      */
+      // path.closePath();
       paths.push(path);
     }
 
@@ -91,9 +93,9 @@ class StateYearChart {
       .attr("d", (d) => {
         return d;
       })
-      .attr("fill", (d, i) => {
-        return numberToPathColor(i);
-      });
+      .attr("fill", "none")
+      .style("stroke", "red")
+      .style("stroke-width", "1px");
     
     // axis
     let xAxisScale = d3.scaleOrdinal()
@@ -116,9 +118,7 @@ class StateYearChart {
       .attr("text-anchor", "end")
       .attr("dy", "0.5em")
       .attr("transform", (d, i) => {
-        return `translate(-4, ${yScale(
-          (accumulatedFractionsPerYear[0][i] +
-          accumulatedFractionsPerYear[0][i + 1]) * 0.5)})`;
+        return `translate(-4, ${yScale(data.data[i].incidentCountFraction)})`;
       })
   }
 }
