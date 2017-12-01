@@ -20,6 +20,7 @@ class IncidentTable {
     let trEnter = tr.enter()
       .append("tr");
     let trMerged = tr.merge(trEnter);
+    tr.exit().remove();
 
     let formatDate = function(date) {
       let m = date.month.toString();
