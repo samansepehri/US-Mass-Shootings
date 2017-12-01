@@ -4,7 +4,7 @@ class TileMap {
     let height = 350;
     this.width = width;
     this.height = height;
-
+    this.selectedStates = [];
     this.div = parent.append("div")
       .style("overflow", "visible");
     this.svg = this.div.append("svg")
@@ -14,6 +14,7 @@ class TileMap {
   }
 
   update(data, criterion) {
+    self = this;
     let rowCount = data.metadata.rowCount;
     let colCount = data.metadata.colCount;
 
@@ -92,18 +93,17 @@ class TileMap {
           + tileHeight * 0.75})`;
       });
 
-      let selectedStates =[];
       rect.merge(rectEnter).on('click', function(d,i){
         if(d3.select(this).classed('selected-state')){
           d3.select(this).classed('selected-state', false).style("stroke-width", "1px")
           .style("stroke", "#666666");
-          selectedStates.splice(selectedStates.indexOf(d.name),1);
+          self.selectedStates.splice(self.selectedStates.indexOf(d.name),1);
         }else{
           d3.select(this).classed('selected-state', true).style("stroke-width", "3px")
           .style("stroke", "black");
-          selectedStates.push(d.name);
+          self.selectedStates.push(d.name);
         }
-        main.updateStateList(selectedStates);
+        main.updateStateList(self.selectedStates);
       })
   }
 }

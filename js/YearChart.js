@@ -119,4 +119,7 @@ class YearChart {
           }
       }
   }
+  updateByState(filteredData){
+
+  }
 }

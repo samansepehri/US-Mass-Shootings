@@ -154,17 +154,8 @@ main.updateYearRange = function(minYear, maxYear) {
     return minYear <= year && year <= maxYear;
   });
 
-  main.tileMapData.data = computeTileMapData(main.statesData, main.filteredDataByYear);
-  main.tileMap.update(main.tileMapData, main.criterion);
+  main.updateLinkedCharts();
 
-  main.incidentTableData = computeIncidentTableData(main.filteredData);
-  main.incidentTable.update(main.incidentTableData);
-
-  main.scatterPlotData = computeScatterPlotData(main.filteredData);
-  main.scatterPlot.update(main.scatterPlotData);
-
-  main.dayChartData = computeDayChartData(main.filteredData);
-  main.dayChart.update(main.dayChartData, main.criterion);
 }
 main.updateStateList = function(selectedStates){
   if(selectedStates.length < 1){
@@ -185,6 +176,12 @@ main.updateStateList = function(selectedStates){
     main.yearChartData = computeYearChartData(main.filteredData);
     main.yearChart.update(main.yearChartData, main.criterion);
   }
+  main.updateLinkedCharts();
+}
+
+main.updateLinkedCharts = function(){
+  main.tileMapData.data = computeTileMapData(main.statesData, main.filteredDataByYear);
+  main.tileMap.update(main.tileMapData, main.criterion);
 
   main.incidentTableData = computeIncidentTableData(main.filteredData);
   main.incidentTable.update(main.incidentTableData);
@@ -192,6 +189,8 @@ main.updateStateList = function(selectedStates){
   main.scatterPlotData = computeScatterPlotData(main.filteredData);
   main.scatterPlot.update(main.scatterPlotData);
 
+  main.dayChartData = computeDayChartData(main.filteredData);
+  main.dayChart.update(main.dayChartData, main.criterion);
 }
 
 main.animation = {delay: 250, duration: 1000};
