@@ -106,33 +106,44 @@ main.updateCriterion = function(criterion) {
 }
 
 main.updateYearRange = function(minYear, maxYear) {
-  filteredData = main.allIncidents.filter((incident) => {
+  main.filteredDataByYear = main.allIncidents.filter((incident) => {
     let year = incident.Date.split('/')[2];
     return minYear <= year && year <= maxYear;
   });
-  main.tileMapData.data = computeTileMapData(main.statesData, filteredData);
+
+  main.filteredData = main.filteredDataByState.filter((incident) => {
+    let year = incident.Date.split('/')[2];
+    return minYear <= year && year <= maxYear;
+  });
+
+  main.tileMapData.data = computeTileMapData(main.statesData, main.filteredDataByYear);
   main.tileMap.update(main.tileMapData, main.criterion);
 
-  main.incidentTableData = computeIncidentTableData(filteredData);
+  main.incidentTableData = computeIncidentTableData(main.filteredData);
   main.incidentTable.update(main.incidentTableData);
 
-  main.scatterPlotData = computeScatterPlotData(filteredData);
+  main.scatterPlotData = computeScatterPlotData(main.filteredData);
   main.scatterPlot.update(main.scatterPlotData);
 }
 main.updateStateList = function(selectedStates){
   if(selectedStates.length < 1){
-    filteredData = main.allIncidents;
+    main.filteredData = main.filteredDataByYear;
+    main.filteredDataByState = main.allIncidents;
   } else {
-    filteredData = main.allIncidents.filter((incident) => {
+    main.filteredDataByState = main.allIncidents.filter((incident) => {
+      let state = incident.State;
+      return selectedStates.indexOf(state) > -1;
+    });
+    main.filteredData = main.filteredDataByYear.filter((incident) => {
       let state = incident.State;
       return selectedStates.indexOf(state) > -1;
     });
   }
 
-  main.incidentTableData = computeIncidentTableData(filteredData);
+  main.incidentTableData = computeIncidentTableData(main.filteredData);
   main.incidentTable.update(main.incidentTableData);
 
-  main.scatterPlotData = computeScatterPlotData(filteredData);
+  main.scatterPlotData = computeScatterPlotData(main.filteredData);
   main.scatterPlot.update(main.scatterPlotData);
 }
 
@@ -195,6 +206,9 @@ async function init() {
     incidentData.State = incidentData.State.trim();
   });
   main.allIncidents = data;
+  main.filteredData = main.allIncidents;
+  main.filteredDataByYear = main.allIncidents;
+  main.filteredDataByState = main.allIncidents;
 
   let states = [];
   statesData.forEach(function(state, i) {
