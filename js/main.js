@@ -79,6 +79,23 @@ function computeIncidentTableData(incidentsData) {
   return incidentTableData;
 }
 
+function computeScatterPlotData(incidentsData) {
+  let scatterPlotData = [];
+
+  incidentsData.forEach(function(item, n) {
+    let killed = parseInt(item.Fatalities);
+    let injured = parseInt(item.Injured);
+
+    scatterPlotData.push({
+      title: item.Title,
+      injured: injured,
+      killed: killed
+    });
+  });
+
+  return scatterPlotData;
+}
+
 main = {};
 
 main.updateCriterion = function(criterion) {
@@ -93,14 +110,15 @@ main.updateYearRange = function(minYear, maxYear) {
     let year = incident.Date.split('/')[2];
     return minYear <= year && year <= maxYear;
   });
-  // console.log(filteredData)
-  // console.log(filteredData.length);
+
   main.tileMapData.data = computeTileMapData(main.statesData, filteredData);
-  // console.log(main.tileMapData.data);
   main.tileMap.update(main.tileMapData, main.criterion);
 
   main.incidentTableData = computeIncidentTableData(filteredData);
   main.incidentTable.update(main.incidentTableData);
+
+  main.scatterPlotData = computeScatterPlotData(filteredData);
+  main.scatterPlot.update(main.scatterPlotData);
 }
 
 async function init() {
@@ -180,9 +198,6 @@ async function init() {
     });
   }
   yearChart.update(main.yearChartData, criterion);
-
-  tileMapData.data = computeTileMapData(statesData, data);
-  tileMap.update(tileMapData, criterion);
   
   let selectedYears = years.slice(years.length - 5);
   let selectedStates = states.slice(states.length - 10); //states.length - 5
@@ -215,34 +230,6 @@ async function init() {
   })
   stateYearChart.update(stateYearChartData);
 
-  data.forEach(function(item, n) {
-    // TODO do not hardcode max number of incidents
-    let killed = parseInt(item.Fatalities);
-    let injured = parseInt(item.Injured);
-
-    if (n < 10) {
-      incidentTableData.push({
-        title: item.Title,
-        date: parseDate(item.Date),
-        state: item.State,
-        location: item.Location,
-        killed: killed,
-        injured: injured,
-        area: item["Incident Area"]
-      });
-    }
-
-    // TODO do not hardcode criterion to filter incidents
-    if (injured + killed < 60) {
-      scatterPlotData.push({
-        title: item.Title,
-        injured: injured,
-        killed: killed
-      });
-    }
-  });
-  incidentTable.update(incidentTableData);
-
   scatterPlot.update(scatterPlotData);
 
   let dayNames = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
@@ -255,6 +242,8 @@ async function init() {
     };
   }
   dayChart.update(dayChartData);
+
+  main.updateYearRange(minYear, maxYear);
 }
 
 init();

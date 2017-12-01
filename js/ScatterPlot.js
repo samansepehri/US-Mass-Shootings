@@ -71,7 +71,8 @@ class ScatterPlot {
     let circle = this.svg.selectAll("circle.incident-point").data(data);
     let circleEnter = circle.enter()
       .append("circle")
-      .attr("fill", "#0000aa");
+      .attr("fill", "#0000aa")
+      .classed("incident-point", true);
     circle.merge(circleEnter)
       .attr("cx", (d) => { return xScale(d.killed); })
       .attr("cy", (d) => { return yScale(d.injured); })
@@ -80,5 +81,9 @@ class ScatterPlot {
         let victims = d.injured + d.killed;
         return colorScale(victims);
       });
+
+    circle.exit()
+      .attr("cx", (d) => { console.log("xxxx"); return xScale(d.killed); })
+      .remove();
   }
 }
