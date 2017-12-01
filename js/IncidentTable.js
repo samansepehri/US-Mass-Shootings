@@ -1,6 +1,8 @@
 class IncidentTable {
   constructor(parent) {
-    this.div = parent.append("div");
+    this.div = parent.append("div")
+      .style("height", "300px")
+      .style("overflow-y", "scroll");
     this.table = this.div.append("table");
 
     this.thead = this.table.append("thead");

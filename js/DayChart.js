@@ -26,15 +26,15 @@ class DayChart {
       .attr("height", height);
   }
 
-  update(data) {
+  update(data, criterion) {
     let xMargin = 5;
     let w = (this.width - xMargin * data.length) / data.length;
     let x0 = xMargin + w * 0.5;
     let y0Bar = this.height - 50;
     let y0Label = this.height - 20;
 
-    let scaleIncidentCount = d3.scaleLinear()
-    .domain([0, data.max("incidentCount")])
+    let scaleCriterion = d3.scaleLinear()
+    .domain([0, data.max(criterion)])
     .range([0, y0Bar]);
 
     let rect = this.svg.selectAll("rect.day-bar")
@@ -47,11 +47,11 @@ class DayChart {
       .attr("transform", (d, i) => {
         return `translate(
         ${x0 + i * (xMargin + w) - w * 0.5},
-        ${y0Bar - scaleIncidentCount(d.incidentCount)})`;
+        ${y0Bar - scaleCriterion(d[criterion])})`;
       })
       .attr("fill", "black")
       .attr("height", (d) => {
-        return scaleIncidentCount(d.incidentCount)
+        return scaleCriterion(d[criterion])
       })
       .attr("width", w)
       .on("click", (d, i) => {
