@@ -110,7 +110,6 @@ main.updateYearRange = function(minYear, maxYear) {
     let year = incident.Date.split('/')[2];
     return minYear <= year && year <= maxYear;
   });
-
   main.tileMapData.data = computeTileMapData(main.statesData, filteredData);
   main.tileMap.update(main.tileMapData, main.criterion);
 

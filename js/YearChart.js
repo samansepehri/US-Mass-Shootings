@@ -92,5 +92,23 @@ class YearChart {
         ${y0Label})
         rotate(-90)`;
       });
+
+      let brush = d3.brushX()
+      .extent([[0, 0], [this.width, y0Bar]])
+      .on("end", brushed);
+  
+      this.svg.append("g")
+          .attr("class", "brush")
+          .call(brush);
+         
+      function brushed() {
+          let brushPosition = d3.event.selection;
+          if(!brushPosition){
+            // TODO
+          }else{
+            let left = Math.floor((brushPosition[0] - x0 + w + xMargin) / (xMargin+w));
+            let right = Math.floor((brushPosition[1] - x0 + w - xMargin) / (xMargin+w));
+          }
+      }
   }
 }
