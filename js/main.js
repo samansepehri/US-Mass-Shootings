@@ -123,7 +123,7 @@ main.updateYearRange = function(minYear, maxYear) {
 async function init() {
   let body = d3.select("body");
   
-  let yearChart = new YearChart(body);
+  let yearChart = new YearChart(body, main);
   main.yearChart = yearChart;
 
   let tileMap = new TileMap(body);
@@ -167,6 +167,7 @@ async function init() {
   for (let y = 0; y < maxYear - minYear + 1; y++) {
     years[y] = minYear + y;
   }
+  main.years = years;
 
   let data = await loadData("data/MSDV5P.csv");
   let statesData = await loadData("data/states.csv");

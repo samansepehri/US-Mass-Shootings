@@ -1,5 +1,7 @@
 class YearChart {
-  constructor(parent) {
+  constructor(parent, main) {
+    this.main = main;
+
     let width = 950;
     let height = 200;
     this.width = width;
@@ -93,6 +95,7 @@ class YearChart {
         rotate(-90)`;
       });
 
+      self = this;
       let brush = d3.brushX()
       .extent([[0, 0], [this.width, y0Bar]])
       .on("end", brushed);
@@ -108,6 +111,9 @@ class YearChart {
           }else{
             let left = Math.floor((brushPosition[0] - x0 + w + xMargin) / (xMargin+w));
             let right = Math.floor((brushPosition[1] - x0 + w - xMargin) / (xMargin+w));
+            let minYear = main.years[left];
+            let maxYear = main.years[right];
+            self.main.updateYearRange(minYear, maxYear);
           }
       }
   }
