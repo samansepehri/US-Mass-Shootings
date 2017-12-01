@@ -120,10 +120,12 @@ main.updateYearRange = function(minYear, maxYear) {
   main.scatterPlot.update(main.scatterPlotData);
 }
 
+main.animation = {delay: 250, duration: 1000};
+
 async function init() {
   let body = d3.select("body");
   
-  let yearChart = new YearChart(body, main);
+  let yearChart = new YearChart(body);
   main.yearChart = yearChart;
 
   let tileMap = new TileMap(body);

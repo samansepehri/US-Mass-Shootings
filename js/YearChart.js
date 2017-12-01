@@ -1,6 +1,5 @@
 class YearChart {
-  constructor(parent, main) {
-    this.main = main;
+  constructor(parent) {
 
     let width = 950;
     let height = 200;
@@ -41,6 +40,7 @@ class YearChart {
   }
 
   update(data, criterion) {
+    self = this;
     let xMargin = 5;
     let w = (this.width - xMargin * data.length) / data.length;
     let x0 = xMargin + w * 0.5;
@@ -59,21 +59,23 @@ class YearChart {
       .data(data);
     let rectEnter = rect.enter()
       .append("rect")
-      .classed("year-bar", true);
+      .classed("year-bar", true)
+      .attr('y', y0Bar)
+      .attr("height", 0);
     
     rect.merge(rectEnter)
-      .attr("transform", (d, i) => {
-        return `translate(
-        ${x0 + i * (xMargin + w) - w},
-        ${y0Bar - scaleIncidentCount(d[criterion])})`;
-      })
-      .attr("fill", "black")
-      .attr("height", (d) => {
-        return scaleIncidentCount(d[criterion])
-      })
-      .attr("width", w)
       .on("click", (d, i) => {
         main.updateYearRange(d.year, d.year);
+      })
+      .attr('x', (d, i) => x0 + i * (xMargin + w) - w )
+      .transition()
+      .duration(main.animation.duration)
+      .delay(main.animation.delay)
+      .attr("fill", "red")
+      .attr("width", w)
+      .attr('y', ((d, i) => y0Bar - scaleIncidentCount(d[criterion])))
+      .attr("height", (d) => {
+        return scaleIncidentCount(d[criterion])
       });
     
     let yearLabel = this.svg.selectAll("text.year-label")
@@ -95,7 +97,6 @@ class YearChart {
         rotate(-90)`;
       });
 
-      self = this;
       let brush = d3.brushX()
       .extent([[0, 0], [this.width, y0Bar]])
       .on("end", brushed);
@@ -113,7 +114,7 @@ class YearChart {
             let right = Math.floor((brushPosition[1] - x0 + w - xMargin) / (xMargin+w));
             let minYear = main.years[left];
             let maxYear = main.years[right];
-            self.main.updateYearRange(minYear, maxYear);
+            main.updateYearRange(minYear, maxYear);
           }
       }
   }
