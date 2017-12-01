@@ -105,6 +105,20 @@ main.updateCriterion = function(criterion) {
   main.tileMap.update(main.tileMapData, criterion);
 }
 
+function computeDayChartData(data) {
+  let dayChartData = [];
+  let dayNames = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+  for (let i = 0; i < 7; i++) {
+    let thisDay = data.filter(item => dayNames[i] == item.DayOfTheWeek);
+    let totalVictims = thisDay.sum("Fatalities") + thisDay.sum("Injured");
+    dayChartData.push({
+      totalVictims: totalVictims,
+      incidentCount: thisDay.length
+    });
+  }
+  return dayChartData;
+}
+
 main.updateYearRange = function(minYear, maxYear) {
   filteredData = main.allIncidents.filter((incident) => {
     let year = incident.Date.split('/')[2];
@@ -118,6 +132,9 @@ main.updateYearRange = function(minYear, maxYear) {
 
   main.scatterPlotData = computeScatterPlotData(filteredData);
   main.scatterPlot.update(main.scatterPlotData);
+
+  main.dayChartData = computeDayChartData(filteredData);
+  main.dayChart.update(main.dayChartData);
 }
 main.updateStateList = function(selectedStates){
   if(selectedStates.length < 1){
@@ -249,17 +266,6 @@ async function init() {
   stateYearChart.update(stateYearChartData);
 
   scatterPlot.update(scatterPlotData);
-
-  let dayNames = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-  for (let i = 0; i < 7; i++) {
-    let thisDay = data.filter(item => dayNames[i] == item.DayOfTheWeek);
-    let totalVictims = thisDay.sum('Fatalities') + thisDay.sum('Injured');
-    dayChartData[i] = {
-      totalVictims: totalVictims,
-      incidentCount: thisDay.length
-    };
-  }
-  dayChart.update(dayChartData);
 
   main.updateYearRange(minYear, maxYear);
 }
