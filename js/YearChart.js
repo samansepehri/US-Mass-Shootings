@@ -101,9 +101,7 @@ class YearChart {
       .extent([[0, 0], [this.width, y0Bar]])
       .on("end", brushed);
 
-      this.svg.select('.brush').remove();
-
-      this.svg.append("g")
+      this.svg.selectAll('g').data([1]).enter().append("g")
           .attr("class", "brush")
           .call(brush);
          

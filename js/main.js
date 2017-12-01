@@ -120,10 +120,14 @@ main.updateYearRange = function(minYear, maxYear) {
   main.scatterPlot.update(main.scatterPlotData);
 }
 main.updateStateList = function(selectedStates){
-  filteredData = main.allIncidents.filter((incident) => {
-    let state = incident.State;
-    return selectedStates.indexOf(state) > -1;
-  });
+  if(selectedStates.length < 1){
+    filteredData = main.allIncidents;
+  } else {
+    filteredData = main.allIncidents.filter((incident) => {
+      let state = incident.State;
+      return selectedStates.indexOf(state) > -1;
+    });
+  }
 
   main.incidentTableData = computeIncidentTableData(filteredData);
   main.incidentTable.update(main.incidentTableData);
