@@ -119,6 +119,18 @@ main.updateYearRange = function(minYear, maxYear) {
   main.scatterPlotData = computeScatterPlotData(filteredData);
   main.scatterPlot.update(main.scatterPlotData);
 }
+main.updateStateList = function(selectedStates){
+  filteredData = main.allIncidents.filter((incident) => {
+    let state = incident.State;
+    return selectedStates.indexOf(state) > -1;
+  });
+
+  main.incidentTableData = computeIncidentTableData(filteredData);
+  main.incidentTable.update(main.incidentTableData);
+
+  main.scatterPlotData = computeScatterPlotData(filteredData);
+  main.scatterPlot.update(main.scatterPlotData);
+}
 
 main.animation = {delay: 250, duration: 1000};
 

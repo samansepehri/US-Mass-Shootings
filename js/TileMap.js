@@ -91,5 +91,19 @@ class TileMap {
           ${d.row * tileHeight + (d.row - 1) * tileMargin
           + tileHeight * 0.75})`;
       });
+
+      let selectedStates =[];
+      rect.merge(rectEnter).on('click', function(d,i){
+        if(d3.select(this).classed('selected-state')){
+          d3.select(this).classed('selected-state', false).style("stroke-width", "1px")
+          .style("stroke", "#666666");
+          selectedStates.splice(selectedStates.indexOf(d.name),1);
+        }else{
+          d3.select(this).classed('selected-state', true).style("stroke-width", "3px")
+          .style("stroke", "black");
+          selectedStates.push(d.name);
+        }
+        main.updateStateList(selectedStates);
+      })
   }
 }
