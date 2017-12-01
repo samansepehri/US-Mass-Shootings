@@ -125,6 +125,23 @@ function computeDayChartData(data) {
 
   return dayChartData;
 }
+function computeYearChartData(filteredData){
+  let yearChartData = [];
+  for (let y = 0; y < main.years.length; y++) {
+    let thisYear = filteredData.filter(d => main.years[y] == Number(d.Date.split('/')[2]));
+    let killed = thisYear.sum("Fatalities");
+    let injured = thisYear.sum("Injured");
+    let totalVictims = killed + injured;
+    yearChartData.push({
+      year: main.years[y],
+      incidentCount: thisYear.length,
+      killedCount: killed,
+      injuredCount: injured,
+      totalVictimCount: totalVictims
+    });
+  }
+  return yearChartData;
+}
 
 main.updateYearRange = function(minYear, maxYear) {
   main.filteredDataByYear = main.allIncidents.filter((incident) => {
@@ -153,6 +170,9 @@ main.updateStateList = function(selectedStates){
   if(selectedStates.length < 1){
     main.filteredData = main.filteredDataByYear;
     main.filteredDataByState = main.allIncidents;
+    
+    main.yearChartData = computeYearChartData(main.allIncidents);
+    main.yearChart.update(main.yearChartData, main.criterion);
   } else {
     main.filteredDataByState = main.allIncidents.filter((incident) => {
       let state = incident.State;
@@ -162,6 +182,8 @@ main.updateStateList = function(selectedStates){
       let state = incident.State;
       return selectedStates.indexOf(state) > -1;
     });
+    main.yearChartData = computeYearChartData(main.filteredData);
+    main.yearChart.update(main.yearChartData, main.criterion);
   }
 
   main.incidentTableData = computeIncidentTableData(main.filteredData);
@@ -169,6 +191,7 @@ main.updateStateList = function(selectedStates){
 
   main.scatterPlotData = computeScatterPlotData(main.filteredData);
   main.scatterPlot.update(main.scatterPlotData);
+
 }
 
 main.animation = {delay: 250, duration: 1000};
@@ -241,7 +264,7 @@ async function init() {
 
   main.yearChartData = [];
   for (let y = 0; y < years.length; y++) {
-    let thisYear = data.filter(d => years[y] == Number(d.Date.split('/')[2]));
+    let thisYear = main.allIncidents.filter(d => years[y] == Number(d.Date.split('/')[2]));
     let killed = thisYear.sum("Fatalities");
     let injured = thisYear.sum("Injured");
     let totalVictims = killed + injured;
