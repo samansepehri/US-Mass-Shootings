@@ -83,7 +83,6 @@ class ScatterPlot {
       });
 
     circle.exit()
-      .attr("cx", (d) => { return xScale(d.killed); })
       .remove();
   }
 }
