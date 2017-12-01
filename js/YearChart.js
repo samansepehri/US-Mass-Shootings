@@ -108,7 +108,8 @@ class YearChart {
       function brushed() {
           let brushPosition = d3.event.selection;
           if(!brushPosition){
-            // TODO
+            let minYear = 1966, maxYear = 2017;
+            main.updateYearRange(minYear, maxYear);
           }else{
             let left = Math.floor((brushPosition[0] - x0 + w + xMargin) / (xMargin+w));
             let right = Math.floor((brushPosition[1] - x0 + w - xMargin) / (xMargin+w));
