@@ -100,7 +100,9 @@ class YearChart {
       let brush = d3.brushX()
       .extent([[0, 0], [this.width, y0Bar]])
       .on("end", brushed);
-  
+
+      this.svg.select('.brush').remove();
+
       this.svg.append("g")
           .attr("class", "brush")
           .call(brush);
