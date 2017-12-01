@@ -146,7 +146,7 @@ main.updateYearRange = function(minYear, maxYear) {
   main.scatterPlotData = computeScatterPlotData(main.filteredData);
   main.scatterPlot.update(main.scatterPlotData);
 
-  main.dayChartData = computeDayChartData(filteredData);
+  main.dayChartData = computeDayChartData(main.filteredData);
   main.dayChart.update(main.dayChartData, main.criterion);
 }
 main.updateStateList = function(selectedStates){
