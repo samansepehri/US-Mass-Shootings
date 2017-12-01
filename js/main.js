@@ -61,6 +61,24 @@ function computeTileMapData(statesData, incidentsData) {
   return tileMapData;
 }
 
+function computeIncidentTableData(incidentsData) {
+  let incidentTableData = [];
+  incidentsData.forEach(function(item, n) {
+    let killed = parseInt(item.Fatalities);
+    let injured = parseInt(item.Injured);
+    incidentTableData.push({
+      title: item.Title,
+      date: parseDate(item.Date),
+      state: item.State,
+      location: item.Location,
+      killed: killed,
+      injured: injured,
+      area: item["Incident Area"]
+    });
+  });
+  return incidentTableData;
+}
+
 main = {};
 
 main.updateCriterion = function(criterion) {
@@ -80,6 +98,9 @@ main.updateYearRange = function(minYear, maxYear) {
   main.tileMapData.data = computeTileMapData(main.statesData, filteredData);
   // console.log(main.tileMapData.data);
   main.tileMap.update(main.tileMapData, main.criterion);
+
+  main.incidentTableData = computeIncidentTableData(filteredData);
+  main.incidentTable.update(main.incidentTableData);
 }
 
 async function init() {
