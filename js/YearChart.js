@@ -19,8 +19,8 @@ class YearChart {
     let select = div1.append("select")
       .on("change", () => {
         let criterion = critLabelToVal[select.property("value")];
-        console.log(criterion);
-        this.update(main.yearChartData, criterion);
+        console.log("select changed");
+        main.updateCriterion(criterion);
       });
     div1.append("h2")
       .text("by year")
@@ -71,9 +71,7 @@ class YearChart {
       })
       .attr("width", w)
       .on("click", (d, i) => {
-        main.tileMap.update([
-          // ???
-        ]);
+        main.updateYearRange(d.year, d.year);
       });
     
     let yearLabel = this.svg.selectAll("text.year-label")

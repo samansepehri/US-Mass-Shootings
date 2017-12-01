@@ -13,7 +13,7 @@ class TileMap {
       .attr("overflow", "visible");
   }
 
-  update(data) {
+  update(data, criterion) {
     let rowCount = data.metadata.rowCount;
     let colCount = data.metadata.colCount;
 
@@ -21,8 +21,6 @@ class TileMap {
     let tileWidth = (this.width - tileMargin * (colCount - 1)) / colCount;
     let tileHeight = (this.height - tileMargin * (rowCount - 1)) / rowCount;
 
-    // TODO link criterion with rest of the visualization
-    let criterion = "incidentCount";
     let maxNumber = 0;
     data.data.forEach((item) => {
       let number = item[criterion];
@@ -46,7 +44,7 @@ class TileMap {
       .attr("width", tileWidth)
       .attr("height", tileHeight)
       .attr("fill", (d) => {
-        return colorScale(d.incidentCount);
+        return colorScale(d[criterion]);
       })
       .attr("transform", (d) => {
         return `translate(
