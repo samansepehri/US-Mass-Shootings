@@ -103,19 +103,26 @@ main.updateCriterion = function(criterion) {
   main.criterion = criterion;
   main.yearChart.update(main.yearChartData, criterion);
   main.tileMap.update(main.tileMapData, criterion);
+  main.dayChart.update(main.dayChartData, criterion);
 }
 
 function computeDayChartData(data) {
   let dayChartData = [];
   let dayNames = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+  
   for (let i = 0; i < 7; i++) {
     let thisDay = data.filter(item => dayNames[i] == item.DayOfTheWeek);
-    let totalVictims = thisDay.sum("Fatalities") + thisDay.sum("Injured");
+    let killedCount = thisDay.sum("Fatalities");
+    let injuredCount = thisDay.sum("Injured");
+    let incidentCount = thisDay.length;
     dayChartData.push({
-      totalVictims: totalVictims,
-      incidentCount: thisDay.length
+      incidentCount: incidentCount,
+      injuredCount: injuredCount,
+      killedCount: killedCount,
+      totalVictimCount: injuredCount + killedCount
     });
   }
+
   return dayChartData;
 }
 
@@ -134,7 +141,7 @@ main.updateYearRange = function(minYear, maxYear) {
   main.scatterPlot.update(main.scatterPlotData);
 
   main.dayChartData = computeDayChartData(filteredData);
-  main.dayChart.update(main.dayChartData);
+  main.dayChart.update(main.dayChartData, main.criterion);
 }
 main.updateStateList = function(selectedStates){
   if(selectedStates.length < 1){
