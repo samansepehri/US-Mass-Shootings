@@ -265,8 +265,6 @@ async function init() {
   })
   stateYearChart.update(stateYearChartData);
 
-  scatterPlot.update(scatterPlotData);
-
   main.updateYearRange(minYear, maxYear);
 }
 
