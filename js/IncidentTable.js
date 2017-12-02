@@ -1,18 +1,40 @@
 class IncidentTable {
   constructor(parent) {
-    this.div = parent.append("div")
-      .style("height", "300px")
-      .style("overflow-y", "scroll");
-    this.table = this.div.append("table");
-
-    this.thead = this.table.append("thead");
+    
+    let width = 950;
+    let height = 200;
+    this.width = width;
+    this.height = height;
+    self =  this;
+    this.divHeader = parent.append("div");
+    this.tdPadding = 8;
+    this.tableHeader = this.divHeader.append('table').style('width', this.width);
+    this.thead = this.tableHeader.append("thead");
     let trHead = this.thead.append("tr");
-    let headData = ["Title", "Date", "State", "Killed", "Injured", "Total Victims", "Location", "Area"];
-    trHead.selectAll("td").data(headData).enter()
+    this.headData = [{name: "Title", ratio: 5},
+     {name: "Date", ratio: 2},
+     {name: "State", ratio: 1},
+     {name: "Killed", ratio: 1},
+     {name: "Injured", ratio: 1},
+     {name: "Total Victims", ratio: 2},
+     {name: "Location", ratio: 3},
+     {name: "Area", ratio: 3}];
+
+    //this.width/headData.length;
+    let headWidthRatio = [6, 3, 1, 1, 1, 1, 2, 2];
+    
+    trHead.selectAll("td").data(this.headData).enter()
       .append("td")
+      .attr('width', (d) => (d.ratio/this.headData.sum('ratio')) * this.width - 2*this.tdPadding)
       .text((d) => {
-        return d;
+        return d.name;
       });
+    
+    this.div = parent.append('div')
+    .style("height", "300px")
+    .style("overflow-y", "scroll"); 
+
+    this.table = this.div.append("table").style('width', this.width);
 
     this.tbody = this.table.append("tbody");
   }
@@ -45,8 +67,9 @@ class IncidentTable {
           { class: "col-area", value: d.area }
         ]
       });
+    
     let tdEnter = td.enter()
-      .append("td")
+      .append("td").attr('width', (d, i) =>  (this.headData[i].ratio/this.headData.sum('ratio')) * this.width - 2*this.tdPadding)
       .attr("class", (d) => {
         return d.class;
       });
