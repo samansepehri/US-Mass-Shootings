@@ -202,8 +202,6 @@ main.updateStateList = function(selectedStates) {
     main.filteredData = main.filteredDataByYear;
     main.filteredDataByState = main.allIncidents;
     
-    main.yearChartData = computeYearChartData(main.allIncidents);
-    main.yearChart.update(main.yearChartData, main.criterion);
   } else {
     main.filteredDataByState = main.allIncidents.filter((incident) => {
       let state = incident.State;
@@ -213,9 +211,10 @@ main.updateStateList = function(selectedStates) {
       let state = incident.State;
       return selectedStates.indexOf(state) > -1;
     });
-    main.yearChartHighlightData = computeYearChartData(main.filteredData);
-    main.yearChart.update(main.yearChartHighlightData, main.criterion);
   }
+  main.yearChartHighlightData = computeYearChartData(main.filteredData);
+  main.yearChart.update(main.yearChartHighlightData, main.criterion);
+  
   main.updateLinkedCharts();
 }
 
