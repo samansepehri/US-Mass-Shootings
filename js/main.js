@@ -191,9 +191,6 @@ main.updateYearRange = function(minYear, maxYear) {
     return minYear <= year && year <= maxYear;
   });
 
-  main.yearChartHighlightData = computeYearChartData(main.filteredData);
-  main.yearChart.update(main.yearChartHighlightData, main.criterion);
-
   main.updateLinkedCharts();
 
 }
@@ -212,13 +209,15 @@ main.updateStateList = function(selectedStates) {
       return selectedStates.indexOf(state) > -1;
     });
   }
-  main.yearChartHighlightData = computeYearChartData(main.filteredData);
-  main.yearChart.update(main.yearChartHighlightData, main.criterion);
   
   main.updateLinkedCharts();
 }
 
 main.updateLinkedCharts = function() {
+
+  main.yearChartData = computeYearChartData(main.filteredData);
+  main.yearChart.update(main.yearChartData, main.criterion);
+
   main.tileMapData.data = computeTileMapData(main.statesData, main.filteredDataByYear);
   main.tileMap.update(main.tileMapData, main.criterion);
 

@@ -99,8 +99,8 @@ class TileMap {
           .style("stroke", "#666666");
           self.selectedStates.splice(self.selectedStates.indexOf(d.name),1);
         }else{
-          d3.select(this).classed('selected-state', true).style("stroke-width", "3px")
-          .style("stroke", "black");
+          d3.select(this).classed('selected-state', true).style("stroke-width", "4px")
+          .style("stroke", "#666666");
           self.selectedStates.push(d.name);
         }
         main.updateStateList(self.selectedStates);
