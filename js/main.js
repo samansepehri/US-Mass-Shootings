@@ -132,9 +132,10 @@ function computeYearChartData(filteredData){
     let killed = thisYear.sum("Fatalities");
     let injured = thisYear.sum("Injured");
     let totalVictims = killed + injured;
+    let incidentCount = thisYear.length;
     yearChartData.push({
       year: main.years[y],
-      incidentCount: thisYear.length,
+      incidentCount: incidentCount,
       killedCount: killed,
       injuredCount: injured,
       totalVictimCount: totalVictims
@@ -189,6 +190,9 @@ main.updateYearRange = function(minYear, maxYear) {
     let year = incident.Date.split('/')[2];
     return minYear <= year && year <= maxYear;
   });
+
+  main.yearChartHighlightData = computeYearChartData(main.filteredData);
+  main.yearChart.update(main.yearChartHighlightData, main.criterion);
 
   main.updateLinkedCharts();
 

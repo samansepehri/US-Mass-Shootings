@@ -40,6 +40,7 @@ class YearChart {
   }
 
   update(data, criterion) {
+    console.log(data);
     self = this;
     let xMargin = 5;
     let w = (this.width - xMargin * data.length) / data.length;
@@ -47,7 +48,7 @@ class YearChart {
     let y0Bar = this.height - 70;
     let y0Label = this.height - 50;
 
-    let maxIncidentCount = 0;
+    let maxIncidentCount = 1;
     data.forEach((item) => {
       if (item[criterion] > maxIncidentCount) maxIncidentCount = item[criterion];
     });
@@ -98,7 +99,7 @@ class YearChart {
       });
 
       let brush = d3.brushX()
-      .extent([[0, 0], [this.width, y0Bar]])
+      .extent([[0, y0Bar + 1], [this.width, this.height - 30 ]])
       .on("end", brushed);
 
       this.svg.selectAll('g').data([1]).enter().append("g")
