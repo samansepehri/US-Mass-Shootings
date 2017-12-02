@@ -209,8 +209,8 @@ main.updateStateList = function(selectedStates) {
       let state = incident.State;
       return selectedStates.indexOf(state) > -1;
     });
-    main.yearChartData = computeYearChartData(main.filteredData);
-    main.yearChart.update(main.yearChartData, main.criterion);
+    main.yearChartHighlightData = computeYearChartData(main.filteredData);
+    main.yearChart.update(main.yearChartHighlightData, main.criterion);
   }
   main.updateLinkedCharts();
 }

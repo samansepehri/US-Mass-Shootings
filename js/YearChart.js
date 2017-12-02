@@ -68,10 +68,10 @@ class YearChart {
         main.updateYearRange(d.year, d.year);
       })
       .attr('x', (d, i) => x0 + i * (xMargin + w) - w )
+      .attr("fill", "red")
       .transition()
       .duration(main.animation.duration)
       .delay(main.animation.delay)
-      .attr("fill", "red")
       .attr("width", w)
       .attr('y', ((d, i) => y0Bar - scaleIncidentCount(d[criterion])))
       .attr("height", (d) => {
@@ -119,7 +119,15 @@ class YearChart {
           }
       }
   }
-  updateByState(filteredData){
+  updateByState(filteredData, criterion){
+    let rect = this.svg.selectAll("rect.year-bar");
+    console.log(rect);
+    rect.each(function(d, i){
+      d3.select(this).classed('year-highlighted', false).attr('fill', 'red');
+      if( filteredData[i][criterion] > 0 ){
+        d3.select(this).classed('year-highlighted', true).attr('fill', 'green');
+      } 
+    });
 
   }
 }
