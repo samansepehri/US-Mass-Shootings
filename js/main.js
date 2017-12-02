@@ -143,6 +143,42 @@ function computeYearChartData(filteredData){
   return yearChartData;
 }
 
+function computeStateYearChartData(allData, selectedYears, selectedStates) {
+  let stateYearChartData = {
+    metadata: {},
+    data: []
+  };
+  stateYearChartData.metadata.years = selectedYears;
+  stateYearChartData.metadata.states = selectedStates;
+
+  selectedStates.forEach(function (state, i) {
+    stateYearChartData.data.push({
+      state: state,
+      incidentCount: [],
+      killedCount: [],
+      injuredCount: [],
+      totalVictimCount: []
+    });
+    selectedYears.forEach(function(year, j) {
+      let incidents = allData.filter(d =>
+        d.State == state.Abbreviation &&
+        Number(d.Date.split('/')[2]) == year);
+      
+      let incidentCount = incidents.length;
+      let killedCount = incidents.sum("Fatalities");
+      let injuredCount = incidents.sum("Injured");
+      let totalVictimCount = killedCount + injuredCount;
+
+      let stateData = stateYearChartData.data[i];
+      stateData.incidentCount.push(incidentCount);
+      stateData.killedCount.push(killedCount);
+      stateData.injuredCount.push(injuredCount);
+      stateData.totalVictimCount.push(totalVictimCount);
+    });
+  });
+  return stateYearChartData;
+}
+
 main.updateYearRange = function(minYear, maxYear) {
   main.filteredDataByYear = main.allIncidents.filter((incident) => {
     let year = incident.Date.split('/')[2];
@@ -157,7 +193,7 @@ main.updateYearRange = function(minYear, maxYear) {
   main.updateLinkedCharts();
 
 }
-main.updateStateList = function(selectedStates){
+main.updateStateList = function(selectedStates) {
   if(selectedStates.length < 1){
     main.filteredData = main.filteredDataByYear;
     main.filteredDataByState = main.allIncidents;
@@ -179,7 +215,7 @@ main.updateStateList = function(selectedStates){
   main.updateLinkedCharts();
 }
 
-main.updateLinkedCharts = function(){
+main.updateLinkedCharts = function() {
   main.tileMapData.data = computeTileMapData(main.statesData, main.filteredDataByYear);
   main.tileMap.update(main.tileMapData, main.criterion);
 
@@ -191,6 +227,14 @@ main.updateLinkedCharts = function(){
 
   main.dayChartData = computeDayChartData(main.filteredData);
   main.dayChart.update(main.dayChartData, main.criterion);
+
+  // TODO handle selected years and states properly
+  let states = main.statesData;
+  let years = main.years;
+  let selectedYears = years.slice(years.length - 5);
+  let selectedStates = states.slice(states.length - 10);
+  main.stateYearChartData = computeStateYearChartData(main.filteredDataByYear, selectedYears, selectedStates);
+  main.stateYearChart.update(main.stateYearChartData, main.criterion);
 }
 
 main.animation = {delay: 250, duration: 1000};
@@ -273,45 +317,6 @@ async function init() {
     });
   }
   yearChart.update(main.yearChartData, criterion);
-  
-  let selectedYears = years.slice(years.length - 5);
-  let selectedStates = states.slice(states.length - 10); //states.length - 5
-
-  let stateYearChartData = {
-    metadata: {},
-    data: []
-  };
-  stateYearChartData.metadata.years = selectedYears;
-  stateYearChartData.metadata.states = selectedStates;
-
-  selectedStates.forEach(function (state, i) {
-    stateYearChartData.data.push({
-      state: state,
-      incidentCount: [],
-      killedCount: [],
-      injuredCount: [],
-      totalVictimCount: []
-    });
-    selectedYears.forEach(function(year, j) {
-      let incidents = data.filter(d =>
-        d.State == state &&
-        Number(d.Date.split('/')[2]) == year);
-      
-      let incidentCount = incidents.length;
-      let killedCount = incidents.sum("Fatalities");
-      let injuredCount = incidents.sum("Injured");
-      let totalVictimCount = killedCount + injuredCount;
-
-      let stateData = stateYearChartData.data[i];
-      stateData.incidentCount.push(incidentCount);
-      stateData.killedCount.push(killedCount);
-      stateData.injuredCount.push(injuredCount);
-      stateData.totalVictimCount.push(totalVictimCount);
-    });
-  });
-  main.stateYearChartData = stateYearChartData;
-  
-  stateYearChart.update(stateYearChartData, main.criterion);
   main.updateYearRange(minYear, maxYear);
 }
 
