@@ -14,7 +14,7 @@ class TileMap {
     let div1 = this.div.append("div")
       .style("display", "block");
     let button = div1.append("button")
-      .text('Clear selection')
+      .text('Clear states selection')
       .style("margin-bottom", "20px")
       .style("display", "inline")
       .on("click", () => {
