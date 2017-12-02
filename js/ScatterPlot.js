@@ -32,7 +32,8 @@ class ScatterPlot {
       .style("background-color", "white")
       .style("border", "1px solid black")
       .style("padding", "5px")
-      .style("visibility", "hidden");
+      .style("visibility", "hidden")
+      .style("pointer-events", "none");
     this.divTooltipTitle = this.divTooltip.append("div");
   }
 
@@ -93,10 +94,13 @@ class ScatterPlot {
         let victims = d.injured + d.killed;
         return colorScale(victims);
       })
+      .on("mouseout", function(d) {
+        divTooltip.style("visibility", "hidden");
+      })
       .on("mouseenter", function(d) {
         let mousePos = d3.mouse(document.body);
-        let left = mousePos[0] + "px";
-        let top = mousePos[1] + "px";
+        let left = (mousePos[0] + 15) + "px";
+        let top = (mousePos[1] + 10) + "px";
         divTooltip
           .style("left", left)
           .style("top", top)
