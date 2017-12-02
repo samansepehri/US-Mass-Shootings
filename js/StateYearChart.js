@@ -11,7 +11,7 @@ function numberToPathColor(i) {
 
 class StateYearChart {
   constructor(parent) {
-    let width = 250;
+    let width = 400;
     let height = 200;
     this.width = width;
     this.height = height;
@@ -40,7 +40,15 @@ class StateYearChart {
     let stateCount = data.data.length;
     let yearCount = years.length;
     
-    let maxY = 20; // TODO compute actual max
+    let maxY = Number.MIN_SAFE_INTEGER;
+    for (let i = 0; i < stateCount; i++) {
+      let stateData = data.data[i];
+      for (let j = 0; j < yearCount; j++) {
+        let value = stateData[criterion][j];
+        if (value >= maxY) maxY = value;
+      }
+    }
+
     // console.log(accumulatedFractionsPerYear);
     let paths = [];
     let xScale = (x) => { return x * this.width / (yearCount - 1); }
@@ -75,7 +83,7 @@ class StateYearChart {
       .style("stroke", "red")
       .style("stroke-width", "1px");
     path.exit().remove();
-    
+
     // axis
     let xAxisScale = d3.scaleOrdinal()
       .domain(years)
