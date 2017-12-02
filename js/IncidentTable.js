@@ -19,9 +19,6 @@ class IncidentTable {
      {name: "Total Victims", ratio: 2},
      {name: "Location", ratio: 3},
      {name: "Area", ratio: 3}];
-
-    //this.width/headData.length;
-    let headWidthRatio = [6, 3, 1, 1, 1, 1, 2, 2];
     
     trHead.selectAll("td").data(this.headData).enter()
       .append("td")
@@ -31,7 +28,7 @@ class IncidentTable {
       });
     
     this.div = parent.append('div')
-    .style("height", "300px")
+    .style("max-height", "300px")
     .style("overflow-y", "scroll"); 
 
     this.table = this.div.append("table").style('width', this.width);
