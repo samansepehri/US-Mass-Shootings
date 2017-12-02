@@ -74,6 +74,7 @@ class StateYearChart {
       .attr("fill", "none")
       .style("stroke", "red")
       .style("stroke-width", "1px");
+    path.exit().remove();
     
     // axis
     let xAxisScale = d3.scaleOrdinal()

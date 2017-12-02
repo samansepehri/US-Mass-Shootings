@@ -151,7 +151,7 @@ function computeStateYearChartData(allData, selectedYears, selectedStates) {
   };
   stateYearChartData.metadata.years = selectedYears;
   stateYearChartData.metadata.states = selectedStates;
-
+  
   selectedStates.forEach(function (state, i) {
     stateYearChartData.data.push({
       state: state,
@@ -162,7 +162,7 @@ function computeStateYearChartData(allData, selectedYears, selectedStates) {
     });
     selectedYears.forEach(function(year, j) {
       let incidents = allData.filter(d =>
-        d.State == state.Abbreviation &&
+        d.State == state/*.Abbreviation*/ &&
         Number(d.Date.split('/')[2]) == year);
       
       let incidentCount = incidents.length;
@@ -181,6 +181,14 @@ function computeStateYearChartData(allData, selectedYears, selectedStates) {
 }
 
 main.updateYearRange = function(minYear, maxYear) {
+  main.selectedYears = [];
+  if (minYear == maxYear) main.selectedYears = [minYear];
+  else {
+    for (let i = minYear; i <= maxYear; i++) {
+      main.selectedYears.push(i);
+    }
+  }
+
   main.filteredDataByYear = main.allIncidents.filter((incident) => {
     let year = incident.Date.split('/')[2];
     return minYear <= year && year <= maxYear;
@@ -195,7 +203,8 @@ main.updateYearRange = function(minYear, maxYear) {
 
 }
 main.updateStateList = function(selectedStates) {
-  if(selectedStates.length < 1){
+  main.selectedStates = selectedStates;
+  if (selectedStates.length < 1) {
     main.filteredData = main.filteredDataByYear;
     main.filteredDataByState = main.allIncidents;
     
@@ -230,11 +239,8 @@ main.updateLinkedCharts = function() {
   main.dayChartData = computeDayChartData(main.filteredData);
   main.dayChart.update(main.dayChartData, main.criterion);
 
-  // TODO handle selected years and states properly
-  let states = main.statesData;
-  let years = main.years;
-  let selectedYears = years.slice(years.length - 5);
-  let selectedStates = states.slice(states.length - 10);
+  let selectedYears = main.selectedYears;
+  let selectedStates = main.selectedStates;
   main.stateYearChartData = computeStateYearChartData(main.filteredDataByYear, selectedYears, selectedStates);
   main.stateYearChart.update(main.stateYearChartData, main.criterion);
 }
@@ -303,6 +309,8 @@ async function init() {
   statesData.forEach(function(state, i) {
     states.push(state.Abbreviation);
   });
+  main.allStates = states;
+  main.selectedStates = states;
 
   main.yearChartData = [];
   for (let y = 0; y < years.length; y++) {
