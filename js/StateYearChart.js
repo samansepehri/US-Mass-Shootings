@@ -37,51 +37,30 @@ class StateYearChart {
   update(data) {
     let years = data.metadata.years;
     let states = data.metadata.states;
-    let stateCount = states.length;
+    let stateCount = data.data.length;
     let yearCount = years.length;
-    let accumulatedFractionsPerYear = [];
-    for (let i = 0; i < yearCount; i++) {
-      accumulatedFractionsPerYear.push([0]);
-    }
-
-    for (let i = 0; i < data.data.length; i++) {
-      // for each state
-      let stateData = data.data[i];
-      let dataPerYear = stateData.incidentCountFraction;
-      for (let j = 0; j < dataPerYear.length; j++) {
-        // for each year
-        let fraction = dataPerYear[j];
-        let yearAccumulatedFractions = accumulatedFractionsPerYear[j];
-        let lastAccumulatedFraction = yearAccumulatedFractions[yearAccumulatedFractions.length - 1];
-        let newAccumulatedFraction = lastAccumulatedFraction + fraction;
-        yearAccumulatedFractions.push(newAccumulatedFraction);
-      }
-    }
-
+    
+    let criterion = "incidentCount";
+    
     // console.log(accumulatedFractionsPerYear);
     let paths = [];
     let xScale = (x) => { return x * this.width / (yearCount - 1); }
-    let yScale = (y) => { return y * this.height; }
+    let yScale = (y) => { console.log(this.height); return y * 4; }
     for (let i = 0; i < stateCount; i++) {
       // for each state, make a path
       let path = d3.path();
-      // accumulatedFractionsPerYear[year][state]
+      let stateData = data.data[i];
       path.moveTo(
         xScale(0),
-        yScale(data.data[0].incidentCountFraction));
+        yScale(stateData[criterion][0]));
+      let yearCount = stateData[criterion].length;
       for (let j = 1; j < yearCount; j++) {
+        let itemData = stateData[criterion][j];
+        // console.log("id", itemData);
         path.lineTo(
           xScale(j),
-          yScale(data.data[j].incidentCountFraction));
+          yScale(itemData));
       }
-      /*
-      for (let j = yearCount - 1; j >= 0; j--) {
-        path.lineTo(
-          xScale(j),
-          yScale(accumulatedFractionsPerYear[j][i + 1]));
-      }
-      */
-      // path.closePath();
       paths.push(path);
     }
 
@@ -107,6 +86,7 @@ class StateYearChart {
       .call(xAxis);
 
     // state labels
+    /*
     let stateLabel = this.svg.selectAll("text.state-label").data(states);
     let stateLabelEnter = stateLabel.enter()
       .append("text")
@@ -118,7 +98,8 @@ class StateYearChart {
       .attr("text-anchor", "end")
       .attr("dy", "0.5em")
       .attr("transform", (d, i) => {
-        return `translate(-4, ${yScale(data.data[i].incidentCountFraction)})`;
+        return `translate(-4, ${yScale(data.data[i][criterion])})`;
       })
+    */
   }
 }

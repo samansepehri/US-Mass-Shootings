@@ -312,14 +312,16 @@ async function init() {
   stateYearChartData.metadata.states = selectedStates;
 
   selectedStates.forEach(function (state, i) {
+    stateYearChartData.data.push({
+      state: state,
+      incidentCount: []
+    });
     selectedYears.forEach(function(year, j) {
       let tempData = data.filter(d =>
-        d.State == selectedStates[i] &&
+        d.State == state &&
         Number(d.Date.split('/')[2]) == year);
-      stateYearChartData.data.push({
-        state: state,
-        incidentCountFraction: 0.1 // TODO compute actual value
-      });
+      let incidentCount = tempData.length;
+      stateYearChartData.data[i].incidentCount.push(incidentCount);
     });
   });
   stateYearChart.update(stateYearChartData);
