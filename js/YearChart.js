@@ -40,7 +40,6 @@ class YearChart {
   }
 
   update(data, criterion) {
-    console.log(data);
     self = this;
     let xMargin = 5;
     let w = (this.width - xMargin * data.length) / data.length;

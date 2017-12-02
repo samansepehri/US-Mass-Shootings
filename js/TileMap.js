@@ -5,12 +5,35 @@ class TileMap {
     this.width = width;
     this.height = height;
     this.selectedStates = [];
+    let self = this;
+
     this.div = parent.append("div")
-      .style("overflow", "visible");
+      .style("overflow", "visible")
+      .style('margin-left', '10px');
+
+    let div1 = this.div.append("div")
+      .style("display", "block");
+    let button = div1.append("button")
+      .text('Clear selection')
+      .style("margin-bottom", "20px")
+      .style("display", "inline")
+      .on("click", () => {
+        self.clearSelection();
+        self.selectedStates = [];
+        main.updateStateList(self.selectedStates);        
+      });
+
     this.svg = this.div.append("svg")
       .attr("width", width)
       .attr("height", height)
       .attr("overflow", "visible");
+
+  }
+  clearSelection() {
+    console.log('Clear state selection');
+    let rect = this.svg.selectAll("rect.tile");
+    rect.classed('selected-state', false).transition().duration(main.animation.duration).style("stroke-width", "1px")
+    .style("stroke", "#666666");
   }
 
   update(data, criterion) {
@@ -39,18 +62,22 @@ class TileMap {
     let rectEnter = rect.enter()
       .append("rect")
       .classed("tile", true)
+      .classed('selected-state', false)
       .style("stroke-width", "1px")
       .style("stroke", "#666666");
+      
     rect.merge(rectEnter)
       .attr("width", tileWidth)
       .attr("height", tileHeight)
-      .attr("fill", (d) => {
-        return colorScale(d[criterion]);
-      })
       .attr("transform", (d) => {
         return `translate(
           ${d.col * tileWidth  + (d.col - 1) * tileMargin},
           ${d.row * tileHeight + (d.row - 1) * tileMargin})`;
+      })
+      //.transition()
+      //.duration(main.animation.duration)
+      .attr("fill", (d) => {
+        return colorScale(d[criterion]);
       });
 
     let txtName = this.svg.selectAll("text.state-name")
@@ -95,11 +122,17 @@ class TileMap {
 
       rect.merge(rectEnter).on('click', function(d,i){
         if(d3.select(this).classed('selected-state')){
-          d3.select(this).classed('selected-state', false).style("stroke-width", "1px")
+          d3.select(this).classed('selected-state', false)
+          .transition()
+          .duration(main.animation.duration)
+          .style("stroke-width", "1px")
           .style("stroke", "#666666");
           self.selectedStates.splice(self.selectedStates.indexOf(d.name),1);
         }else{
-          d3.select(this).classed('selected-state', true).style("stroke-width", "4px")
+          d3.select(this).classed('selected-state', true)
+          .transition()
+          .duration(main.animation.duration)
+          .style("stroke-width", "4px")
           .style("stroke", "#666666");
           self.selectedStates.push(d.name);
         }

@@ -239,7 +239,7 @@ main.updateLinkedCharts = function() {
   main.stateYearChart.update(main.stateYearChartData, main.criterion);
 }
 
-main.animation = {delay: 250, duration: 1000};
+main.animation = {delay: 250, duration: 500};
 
 async function init() {
   let body = d3.select("body");
