@@ -34,18 +34,17 @@ class StateYearChart {
     this.gXAxis = this.svg.append("g");
   }
 
-  update(data) {
+  update(data, criterion) {
     let years = data.metadata.years;
     let states = data.metadata.states;
     let stateCount = data.data.length;
     let yearCount = years.length;
     
-    let criterion = "incidentCount";
-    
+    let maxY = 20; // TODO compute actual max
     // console.log(accumulatedFractionsPerYear);
     let paths = [];
     let xScale = (x) => { return x * this.width / (yearCount - 1); }
-    let yScale = (y) => { console.log(this.height); return y * 4; }
+    let yScale = (y) => { return this.height - y / maxY * this.height; }
     for (let i = 0; i < stateCount; i++) {
       // for each state, make a path
       let path = d3.path();
