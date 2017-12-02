@@ -25,6 +25,15 @@ class ScatterPlot {
     this.yLabel = this.svg.append("text")
       .text("injured")
       .attr("text-anchor", "middle");
+
+    this.divTooltip = this.div.append("div")
+      .style("position", "absolute")
+      .style("cursor", "default")
+      .style("background-color", "white")
+      .style("border", "1px solid black")
+      .style("padding", "5px")
+      .style("visibility", "hidden");
+    this.divTooltipTitle = this.divTooltip.append("div");
   }
 
   update(data) {
@@ -68,6 +77,9 @@ class ScatterPlot {
       .domain([minVictims, maxVictims])
       .range(["#ffeeee", "#ff0000"]);
 
+    let divTooltip = this.divTooltip;
+    let divTooltipTitle = this.divTooltipTitle;
+
     let circle = this.svg.selectAll("circle.incident-point").data(data);
     let circleEnter = circle.enter()
       .append("circle")
@@ -80,6 +92,18 @@ class ScatterPlot {
       .attr("fill", (d) => {
         let victims = d.injured + d.killed;
         return colorScale(victims);
+      })
+      .on("mouseenter", function(d) {
+        let mousePos = d3.mouse(document.body);
+        let left = mousePos[0] + "px";
+        let top = mousePos[1] + "px";
+        divTooltip
+          .style("left", left)
+          .style("top", top)
+          .style("visibility", "visible");
+
+        let tooltipText = "killed: " + d.killed + "<br>" + "injured: " + d.injured;
+        divTooltipTitle.html(tooltipText);
       });
 
     circle.exit()
