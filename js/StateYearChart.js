@@ -40,6 +40,7 @@ class StateYearChart {
     let stateCount = data.data.length;
     let yearCount = years.length;
     
+    let paths = [];
     let maxY = Number.MIN_SAFE_INTEGER;
     for (let i = 0; i < stateCount; i++) {
       let stateData = data.data[i];
@@ -48,28 +49,30 @@ class StateYearChart {
         if (value >= maxY) maxY = value;
       }
     }
-
-    // console.log(accumulatedFractionsPerYear);
-    let paths = [];
     let xScale = (x) => { return x * this.width / (yearCount - 1); }
     let yScale = (y) => { return this.height - y / maxY * this.height; }
-    for (let i = 0; i < stateCount; i++) {
-      // for each state, make a path
-      let path = d3.path();
-      let stateData = data.data[i];
-      path.moveTo(
-        xScale(0),
-        yScale(stateData[criterion][0]));
-      let yearCount = stateData[criterion].length;
-      for (let j = 1; j < yearCount; j++) {
-        let itemData = stateData[criterion][j];
-        // console.log("id", itemData);
-        path.lineTo(
-          xScale(j),
-          yScale(itemData));
+
+    if (yearCount > 1) {
+      // make paths
+      for (let i = 0; i < stateCount; i++) {
+        // for each state, make a path
+        let path = d3.path();
+        let stateData = data.data[i];
+        path.moveTo(
+          xScale(0),
+          yScale(stateData[criterion][0]));
+        let yearCount = stateData[criterion].length;
+        for (let j = 1; j < yearCount; j++) {
+          let value = stateData[criterion][j];
+          path.lineTo(
+            xScale(j),
+            yScale(value));
+        }
+        paths.push(path);
       }
-      paths.push(path);
-    }
+    } else [
+      // TODO what to do if we only have 1 selected year?
+    ]
 
     let path = this.gPaths.selectAll("path.state-through-time").data(paths);
     let pathEnter = path.enter()
