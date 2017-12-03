@@ -19,7 +19,7 @@ class DayChart {
     this.div = parent.append("div")
       .style("margin-right", "15px")
       .style("display", "inline-block");
-    this.div.append("h2")
+    this.title = this.div.append("h2")
       .text("Incidents by day");
     this.svg = this.div.append("svg")
       .attr("width", width)
@@ -27,6 +27,13 @@ class DayChart {
   }
 
   update(data, criterion) {
+    let criterionNames = {
+      "incidentCount": "Incidents",
+      "injuredCount": "Injured",
+      "killedCount": "Killed",
+      "totalVictimCount": "Victims"
+    }
+    this.title.text(criterionNames[criterion] + " by day")
     let xMargin = 5;
     let w = (this.width - xMargin * data.length) / data.length;
     let x0 = xMargin + w * 0.5;
@@ -53,10 +60,7 @@ class DayChart {
       .attr("height", (d) => {
         return scaleCriterion(d[criterion])
       })
-      .attr("width", w)
-      .on("click", (d, i) => {
-        console.log("selected day ", d);
-      });
+      .attr("width", w);
     
     let dayLabel = this.svg.selectAll("text.day-label")
       .data(data);
