@@ -96,6 +96,7 @@ class ScatterPlot {
       })
       .on("mouseout", function(d) {
         divTooltip.style("visibility", "hidden");
+        main.incidentTable.highlight(null);
       })
       .on("mouseenter", function(d) {
         let mousePos = d3.mouse(document.body);
@@ -108,6 +109,7 @@ class ScatterPlot {
 
         let tooltipText = "killed: " + d.killed + "<br>" + "injured: " + d.injured;
         divTooltipTitle.html(tooltipText);
+        main.incidentTable.highlight(d.id);
       });
 
     circle.exit()
