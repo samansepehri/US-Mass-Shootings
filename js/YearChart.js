@@ -57,6 +57,11 @@ class YearChart {
       return incidentCount * y0Bar / maxIncidentCount;
     }
 
+    let maxIncidentCountBar = maxIncidentCount;
+    let scaleY0Bar = (incidentCount) => {
+      return incidentCount * y0Bar / maxIncidentCount;
+    }
+
     let domain = [0, 10, 20, 30, 40, 50];
     let range = ["#ffff00", "#00c900","#0000c6", "#f032e6",'#ffd8b1'];
     let stateColorScale = d3.scaleLinear()
@@ -74,7 +79,9 @@ class YearChart {
             });
     
     let rect = g.selectAll("rect.year-portion")
-      .data(function(d, i) { return d; });
+      .data(function(d, i) {
+         return d;
+      });
 
     let rectEnter = rect.enter()
       .append("rect")
@@ -89,7 +96,14 @@ class YearChart {
       .duration(main.animation.duration)
       .delay(main.animation.delay)
       .attr("width", w)
-      .attr('y',  ((d, i) => y0Bar - scaleIncidentCount(d[criterion])))
+      .attr('y',  ((d, i) => {
+        if(mode=='default'){
+         return y0Bar - scaleIncidentCount(d[criterion])
+        }
+        if(mode=='forStates'){
+         return y0Bar - scaleIncidentCount(d[criterion+'Sum'])
+        }
+      }))
       .attr("height", (d) => {
         return scaleIncidentCount(d[criterion])
       });

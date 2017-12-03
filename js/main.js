@@ -151,6 +151,12 @@ function computeStateYearChartData(allData, selectedYears, selectedStates) {
   let stateYearChartData = [];
   main.years.forEach(function(year, y) {
     stateYearChartData[y] = [];
+
+    let incidentCountSum = 0;
+    let killedCountSum = 0;
+    let injuredCountSum = 0;
+    let totalVictimCountSum = 0;
+
     selectedStates.forEach(function (state, s) {
 
       let incidents = allData.filter(d =>
@@ -162,13 +168,22 @@ function computeStateYearChartData(allData, selectedYears, selectedStates) {
       let injuredCount = incidents.sum("Injured");
       let totalVictimCount = killedCount + injuredCount;
 
+      incidentCountSum += incidentCount;
+      killedCountSum += killedCount;
+      injuredCountSum += injuredCount;
+      totalVictimCountSum += totalVictimCount;
+
       stateYearChartData[y].push({
         year: year,
         state: state,
         incidentCount: incidentCount,
         killedCount: killedCount,
         injuredCount: injuredCount,
-        totalVictimCount: totalVictimCount
+        totalVictimCount: totalVictimCount,
+        incidentCountSum: incidentCountSum,
+        killedCountSum: killedCountSum,
+        injuredCountSum: injuredCountSum,
+        totalVictimCountSum: totalVictimCountSum
       });
     });
 
