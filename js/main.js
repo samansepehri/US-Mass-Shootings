@@ -22,6 +22,15 @@ function parseDate(str) {
   }
 }
 
+function formatDate(date) {
+  let m = date.month.toString();
+  if (m.length == 1) m = "0" + m;
+
+  let d = date.day.toString();
+  if (d.length == 1) d = "0" + d;
+  return date.year.toString() + "/" + m + "/" + d
+}
+
 function loadData(path) {
   return new Promise((resolve, reject) => {
     d3.csv(path, (error, data) => {
@@ -47,7 +56,7 @@ function computeTileMapData(statesData, incidentsData) {
       injuredCount += Number(d["Injured"]);
       killedCount += Number(d["Fatalities"]);
     });
-    // console.log(state.Abbreviation, incidentCount)
+
     tileMapData.push({
       row: parseInt(state.Row),
       col:parseInt(state.Space),
@@ -74,7 +83,8 @@ function computeIncidentTableData(incidentsData) {
       location: item.Location,
       killed: killed,
       injured: injured,
-      area: item["Incident Area"]
+      area: item["Incident Area"],
+      day: item.DayOfTheWeek
     });
   });
   return incidentTableData;
@@ -86,12 +96,13 @@ function computeScatterPlotData(incidentsData) {
   incidentsData.forEach(function(item, n) {
     let killed = parseInt(item.Fatalities);
     let injured = parseInt(item.Injured);
-
     scatterPlotData.push({
       id: item.id,
       title: item.Title,
       injured: injured,
-      killed: killed
+      killed: killed,
+      date: parseDate(item.Date),
+      state: item.State
     });
   });
 
@@ -105,7 +116,6 @@ main.updateCriterion = function(criterion) {
   main.yearChart.update(main.yearChartData, criterion, 'default');
   main.tileMap.update(main.tileMapData, criterion);
   main.dayChart.update(main.dayChartData, criterion);
-  main.stateYearChart.update(main.stateYearChartData, criterion);
 }
 
 function computeDayChartData(data) {
@@ -255,7 +265,6 @@ main.updateLinkedCharts = function() {
   let selectedStates = main.selectedStates;
   if(selectedStates.length > 0){
     main.stateYearChartData = computeStateYearChartData(main.filteredDataByYear, selectedYears, selectedStates);
-    console.log(main.stateYearChartData);
     main.yearChart.update(main.stateYearChartData, main.criterion, 'forStates');
   }
 
@@ -267,25 +276,28 @@ main.animation = {delay: 250, duration: 500};
 
 async function init() {
   let body = d3.select("body");
-  
-  let yearChart = new YearChart(body);
+
+  let div1 = body.append("div").style("display", "inline-block");
+
+  let yearChart = new YearChart(div1);
   main.yearChart = yearChart;
 
-  let tileMap = new TileMap(body);
+  let tileMap = new TileMap(div1);
   main.tileMap = tileMap;
 
-  let incidentTable = new IncidentTable(body);
-  main.incidentTable = incidentTable;
-
-  let div1 = body.append("div").style("display", "inline");
-  let dayChart = new DayChart(div1);
+  let div2 = body.append("div")
+    .style("display", "inline-block")
+    .style("margin-left", "20px");
+  let dayChart = new DayChart(div2);
   main.dayChart = dayChart;
 
-  let stateYearChart = new StateYearChart(div1);
-  main.stateYearChart = stateYearChart;
-
-  let scatterPlot = new ScatterPlot(div1);
+  let scatterPlot = new ScatterPlot(div2);
   main.scatterPlot = scatterPlot;
+
+  let div3 = body.append("div")
+    .style("display", "block");
+  let incidentTable = new IncidentTable(div3);
+  main.incidentTable = incidentTable;
 
   let tileMapData = {
     metadata: {

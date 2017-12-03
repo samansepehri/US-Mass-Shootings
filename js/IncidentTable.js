@@ -1,18 +1,19 @@
 class IncidentTable {
   constructor(parent) {
     
-    let width = 950;
+    let width = 1300;
     let height = 200;
     this.width = width;
     this.height = height;
     self =  this;
     this.divHeader = parent.append("div");
     this.tdPadding = 8;
-    this.tableHeader = this.divHeader.append('table').style('width', this.width);
+    this.tableHeader = this.divHeader.append("table").style("width", this.width);
     this.thead = this.tableHeader.append("thead");
     let trHead = this.thead.append("tr");
     this.headData = [{name: "Title", ratio: 5},
      {name: "Date", ratio: 2},
+     {name: "Day", ratio: 2},
      {name: "State", ratio: 1},
      {name: "Killed", ratio: 1},
      {name: "Injured", ratio: 1},
@@ -22,20 +23,23 @@ class IncidentTable {
     
     trHead.selectAll("td").data(this.headData).enter()
       .append("td")
-      .attr('width', (d) => (d.ratio/this.headData.sum('ratio')) * this.width - 2*this.tdPadding)
+      .attr("width", (d) => (d.ratio/this.headData.sum("ratio")) * this.width - 2*this.tdPadding)
       .text((d) => {
         return d.name;
       });
     
-    this.div = parent.append('div')
-    .style("max-height", "300px")
-    .style("overflow-y", "scroll"); 
+    this.div = parent.append("div")
+      .attr("id", "incident-table-div")
+      .style("max-height", "300px")
+      .style("overflow-y", "scroll");
 
-    this.table = this.div.append("table").style('width', this.width);
+    this.table = this.div.append("table")
+      .style("width", this.width);
 
     this.tbody = this.table.append("tbody");
 
     this.hashIdToRow = {};
+    this.highlightColor = "#ffeeaa";
   }
 
   highlight(incidentId) {
@@ -45,35 +49,39 @@ class IncidentTable {
     if (incidentId != null) {
       let row = this.hashIdToRow[incidentId];
       this.selectedRow = row;
-      row.style("background-color", "#ffeeaa")
+      this.div.node().scrollTo(0, row.node().offsetTop);
+      row.style("background-color", this.highlightColor)
     }
   }
 
   update(data) {
     let hashIdToRow = this.hashIdToRow = {};
-    
+    let highlightColor = this.highlightColor;
+
     let tr = this.tbody.selectAll("tr").data(data);
     let trEnter = tr.enter()
       .append("tr");
     let trMerged = tr.merge(trEnter)
       .each(function(d, i) {
         hashIdToRow[d.id] = d3.select(this);
+      })
+      .on("mouseenter", function(d) {
+        console.log(d.day);
+        d3.select(this).style("background-color", highlightColor);
+        main.scatterPlot.highlight(d.id);
+      })
+      .on("mouseleave", function(d) {
+        d3.select(this).style("background-color", null);
+        main.scatterPlot.highlight(null);
       });
     tr.exit().remove();
 
-    let formatDate = function(date) {
-      let m = date.month.toString();
-      if (m.length == 1) m = "0" + m;
-
-      let d = date.day.toString();
-      if (d.length == 1) d = "0" + d;
-      return date.year.toString() + "/" + m + "/" + d
-    }
     let td = trMerged
       .selectAll("td").data((d) => {
         return [
           { class: "col-title", value: d.title },
           { class: "col-date", value: formatDate(d.date) },
+          { class: "col-day", value: d.day },
           { class: "col-state", value: d.state },
           { class: "col-killed", value: d.killed },
           { class: "col-injured", value: d.injured },
@@ -84,8 +92,8 @@ class IncidentTable {
       });
     
     let tdEnter = td.enter()
-      .append("td").attr('width', (d, i) =>  {
-        return (this.headData[i].ratio / this.headData.sum('ratio')) * this.width - 2 * this.tdPadding;
+      .append("td").attr("width", (d, i) =>  {
+        return (this.headData[i].ratio / this.headData.sum("ratio")) * this.width - 2 * this.tdPadding;
       })
       .attr("class", (d) => {
         return d.class;
@@ -94,6 +102,8 @@ class IncidentTable {
     trMerged.selectAll("td.col-title")
       .html((d) => { return d.value; });
     trMerged.selectAll("td.col-date")
+      .html((d) => { return d.value; });
+    trMerged.selectAll("td.col-day")
       .html((d) => { return d.value; });
     trMerged.selectAll("td.col-state")
       .html((d) => { return d.value; });

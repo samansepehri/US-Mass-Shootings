@@ -6,7 +6,7 @@ class YearChart {
     this.width = width;
     this.height = height;
     
-    this.div = parent.append("div");
+    this.div = parent.append("div").style('overflow', 'visible').style('padding-left', '20px');
 
     let criterionLabels = ["incidents", "injured", "killed", "total victims"];
     let criterionValues = ["incidentCount", "injuredCount", "killedCount", "totalVictimCount"];
@@ -37,6 +37,8 @@ class YearChart {
       .attr("width", width)
       .attr("height", height)
       .style("overflow", "visible");
+
+    this.gYAxis = this.svg.append("g");
   }
 
   update(data, criterion, mode) {
@@ -150,6 +152,15 @@ class YearChart {
             main.updateYearRange(minYear, maxYear);
           }
       }
+
+    let scaleCriterion = d3.scaleLinear()
+      .domain([0, maxIncidentCount])
+      .range([y0Bar, 0]);
+    let yAxis = d3.axisLeft(scaleCriterion);    
+    this.gYAxis
+      .attr("transform", `translate(0, 0)`)
+      .call(yAxis);
+
   }
   updateByState(filteredData, criterion){
     let rect = this.svg.selectAll("rect.year-bar");
