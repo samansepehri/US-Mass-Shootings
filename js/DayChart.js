@@ -18,7 +18,7 @@ class DayChart {
 
     this.div = parent.append("div")
       .style("margin-right", "15px")
-      .style("display", "inline-block");
+      .style("display", "block");
     this.title = this.div.append("h2")
       .text("Incidents by day");
     this.svg = this.div.append("svg")

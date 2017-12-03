@@ -106,7 +106,6 @@ main.updateCriterion = function(criterion) {
   main.yearChart.update(main.yearChartData, criterion);
   main.tileMap.update(main.tileMapData, criterion);
   main.dayChart.update(main.dayChartData, criterion);
-  main.stateYearChart.update(main.stateYearChartData, criterion);
 }
 
 function computeDayChartData(data) {
@@ -250,7 +249,7 @@ main.animation = {delay: 250, duration: 500};
 async function init() {
   let body = d3.select("body");
 
-  let div1 = body.append("div").style("display", "inline");
+  let div1 = body.append("div").style("display", "inline-block");
 
   let yearChart = new YearChart(div1);
   main.yearChart = yearChart;
@@ -261,12 +260,11 @@ async function init() {
   let incidentTable = new IncidentTable(div1);
   main.incidentTable = incidentTable;
 
-  let div2 = body.append("div").style("display", "inline");
+  let div2 = body.append("div")
+    .style("display", "inline-block")
+    .style("margin-left", "20px");
   let dayChart = new DayChart(div2);
   main.dayChart = dayChart;
-
-  let stateYearChart = new StateYearChart(div2);
-  main.stateYearChart = stateYearChart;
 
   let scatterPlot = new ScatterPlot(div2);
   main.scatterPlot = scatterPlot;
