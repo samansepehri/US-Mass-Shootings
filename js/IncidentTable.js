@@ -38,6 +38,7 @@ class IncidentTable {
     this.tbody = this.table.append("tbody");
 
     this.hashIdToRow = {};
+    this.highlightColor = "#ffeeaa";
   }
 
   highlight(incidentId) {
@@ -48,22 +49,30 @@ class IncidentTable {
       let row = this.hashIdToRow[incidentId];
       this.selectedRow = row;
       this.div.node().scrollTo(0, row.node().offsetTop);
-      row.style("background-color", "#ffeeaa")
+      row.style("background-color", this.highlightColor)
     }
   }
 
   update(data) {
     let hashIdToRow = this.hashIdToRow = {};
-    
+    let highlightColor = this.highlightColor;
+
     let tr = this.tbody.selectAll("tr").data(data);
     let trEnter = tr.enter()
       .append("tr");
     let trMerged = tr.merge(trEnter)
       .each(function(d, i) {
         hashIdToRow[d.id] = d3.select(this);
+      })
+      .on("mouseenter", function(d) {
+        d3.select(this).style("background-color", highlightColor);
+        main.scatterPlot.highlight(d.id);
+      })
+      .on("mouseleave", function(d) {
+        d3.select(this).style("background-color", null)
       });
     tr.exit().remove();
-    
+
     let td = trMerged
       .selectAll("td").data((d) => {
         return [

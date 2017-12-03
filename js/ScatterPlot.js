@@ -5,6 +5,8 @@ class ScatterPlot {
     this.width = width;
     this.height = height;
 
+    this.itemRadius = 4;
+
     this.div = parent.append("div")
       .style("overflow", "visible")
       .style("display", "inline-block");
@@ -47,9 +49,25 @@ class ScatterPlot {
       .style("visibility", "hidden")
       .style("pointer-events", "none");
     this.divTooltipTitle = this.divTooltip.append("div");
+
+    this.hashIdToCircle = {};
+    this.selectedCircle = null;
+  }
+
+  highlight(incidentId) {
+    if (this.selectedCircle != null) {
+      this.selectedCircle.attr("r", this.itemRadius)
+    }
+    if (incidentId != null) {
+      let circle = this.hashIdToCircle[incidentId];
+      this.selectedCircle = circle;
+      circle.attr("r", this.itemRadius * 1.5)
+    }
   }
 
   update(data) {
+    let hashIdToCircle = this.hashIdToCircle = {};
+
     let maxInjured = 0;
     let maxKilled = 0;
     let minVictims = Number.MAX_SAFE_INTEGER;
@@ -102,9 +120,12 @@ class ScatterPlot {
       .style("stroke", "black")
       .classed("incident-point", true);
     circle.merge(circleEnter)
+      .each(function(d, i) {
+        hashIdToCircle[d.id] = d3.select(this);
+      })
       .attr("cx", (d) => { return xScale(d.killed); })
       .attr("cy", (d) => { return yScale(d.injured); })
-      .attr("r", 5)
+      .attr("r", this.itemRadius)
       .attr("fill", (d) => {
         let victims = d.injured + d.killed;
         return colorScale(victims);
@@ -122,8 +143,8 @@ class ScatterPlot {
           .style("top", top)
           .style("visibility", "visible");
 
-        let tooltipText = "date: " + formatDate(d.date) + "<br>state: " + d.state +
-          "<br>killed: " + d.killed + "<br>injured: " + d.injured;
+        let tooltipText = /* "date: " + formatDate(d.date) + "<br>state: " + d.state + "<br>" + */ "killed: " + d.killed + "<br>injured: " + d.injured + "<br>total victims: " + (d.injured + d.killed);
+         
         divTooltipTitle.html(tooltipText);
         main.incidentTable.highlight(d.id);
       });
