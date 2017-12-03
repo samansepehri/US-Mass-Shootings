@@ -145,22 +145,12 @@ function computeYearChartData(filteredData){
 }
 
 function computeStateYearChartData(allData, selectedYears, selectedStates) {
-  let stateYearChartData = {
-    metadata: {},
-    data: []
-  };
-  stateYearChartData.metadata.years = selectedYears;
-  stateYearChartData.metadata.states = selectedStates;
-  
-  selectedStates.forEach(function (state, i) {
-    stateYearChartData.data.push({
-      state: state,
-      incidentCount: [],
-      killedCount: [],
-      injuredCount: [],
-      totalVictimCount: []
-    });
-    selectedYears.forEach(function(year, j) {
+
+  let stateYearChartData = [];
+  selectedYears.forEach(function(year, y) {
+    stateYearChartData[y] = [];
+    selectedStates.forEach(function (state, s) {
+
       let incidents = allData.filter(d =>
         d.State == state/*.Abbreviation*/ &&
         Number(d.Date.split('/')[2]) == year);
@@ -170,13 +160,18 @@ function computeStateYearChartData(allData, selectedYears, selectedStates) {
       let injuredCount = incidents.sum("Injured");
       let totalVictimCount = killedCount + injuredCount;
 
-      let stateData = stateYearChartData.data[i];
-      stateData.incidentCount.push(incidentCount);
-      stateData.killedCount.push(killedCount);
-      stateData.injuredCount.push(injuredCount);
-      stateData.totalVictimCount.push(totalVictimCount);
+      stateYearChartData[y].push({
+        year: year,
+        state: state,
+        incidentCount: incidentCount,
+        killedCount: killedCount,
+        injuredCount: injuredCount,
+        totalVictimCount: totalVictimCount
+      });
     });
+
   });
+
   return stateYearChartData;
 }
 
@@ -243,7 +238,8 @@ main.updateLinkedCharts = function() {
   let selectedStates = main.selectedStates;
   main.stateYearChartData = computeStateYearChartData(main.filteredDataByYear, selectedYears, selectedStates);
   console.log(main.stateYearChartData);
-  main.stateYearChart.update(main.stateYearChartData, main.criterion);
+
+  //main.stateYearChart.update(main.stateYearChartData, main.criterion);
 }
 
 main.animation = {delay: 250, duration: 500};
@@ -311,7 +307,7 @@ async function init() {
     states.push(state.Abbreviation);
   });
   main.allStates = states;
-  main.selectedStates = states;
+  main.selectedStates = [];// states;
 
   main.yearChartData = [];
   for (let y = 0; y < years.length; y++) {

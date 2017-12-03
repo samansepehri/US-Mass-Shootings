@@ -55,25 +55,32 @@ class YearChart {
     let scaleIncidentCount = (incidentCount) => {
       return incidentCount * y0Bar / maxIncidentCount;
     }
-    let rect = this.svg.selectAll("rect.year-bar")
-      .data(data);
+    let g = this.svg.selectAll('g.year-bar')
+            .data(data);
+            let gEnter = g.enter()
+            .append('g')
+            .classed('year-bar', true)
+            .on("click", (d) => {
+              main.updateYearRange(d.year, d.year);
+            });
+    
+    let rect = g.selectAll("rect.year-portion")
+      .data(function(d, i) { return [d]; });
+
     let rectEnter = rect.enter()
       .append("rect")
-      .classed("year-bar", true)
+      .classed("year-portion", true)
       .attr('y', y0Bar)
-      .attr("height", 0);
+      .attr('height', 0);
     
     rect.merge(rectEnter)
-      .on("click", (d, i) => {
-        main.updateYearRange(d.year, d.year);
-      })
-      .attr('x', (d, i) => x0 + i * (xMargin + w) - w )
+      .attr('x', (d, i) => x0 + main.years.indexOf(d.year) * (xMargin + w) - w )
       .attr("fill", "red")
       .transition()
       .duration(main.animation.duration)
       .delay(main.animation.delay)
       .attr("width", w)
-      .attr('y', ((d, i) => y0Bar - scaleIncidentCount(d[criterion])))
+      .attr('y',  ((d, i) => y0Bar - scaleIncidentCount(d[criterion])))
       .attr("height", (d) => {
         return scaleIncidentCount(d[criterion])
       });
@@ -101,7 +108,7 @@ class YearChart {
       .extent([[0, y0Bar + 1], [this.width, this.height - 30 ]])
       .on("end", brushed);
 
-      this.svg.selectAll('g').data([1]).enter().append("g")
+      this.svg.selectAll('g.brush').data([1]).enter().append("g")
           .attr("class", "brush")
           .call(brush);
          

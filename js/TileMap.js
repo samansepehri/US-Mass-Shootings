@@ -27,18 +27,12 @@ class TileMap {
       .attr("width", width)
       .attr("height", height)
       .attr("overflow", "visible");
-      console.log(this.randomColors(10, 3, 0.5, 0.5));
   }
   clearSelection() {
     console.log('Clear state selection');
     let rect = this.svg.selectAll("rect.tile");
     rect.classed('selected-state', false).transition().duration(main.animation.duration).style("stroke-width", "1px")
     .style("stroke", "#666666");
-  }
-  randomColors(n, base, saturation, lightness)
-  {
-
-
   }
 
   update(data, criterion) {
