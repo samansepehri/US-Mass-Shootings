@@ -48,19 +48,27 @@ class DayChart {
       .data(data);
     let rectEnter = rect.enter()
       .append("rect")
-      .classed("day-bar", true);
+      .classed("day-bar", true)
+      .attr("transform", (d, i) => {
+        return `translate(
+        ${x0 + i * (xMargin + w) - w * 0.5},
+        ${y0Bar})`;
+      });
     
     rect.merge(rectEnter)
+      .attr("fill", "black")
+      .transition()
+      .duration(main.animation.duration)
+      .delay(main.animation.delay)
+      .attr("height", (d) => {
+        return scaleCriterion(d[criterion])
+      })
+      .attr("width", w)
       .attr("transform", (d, i) => {
         return `translate(
         ${x0 + i * (xMargin + w) - w * 0.5},
         ${y0Bar - scaleCriterion(d[criterion])})`;
-      })
-      .attr("fill", "black")
-      .attr("height", (d) => {
-        return scaleCriterion(d[criterion])
-      })
-      .attr("width", w);
+      });
     
     let dayLabel = this.svg.selectAll("text.day-label")
       .data(data);
