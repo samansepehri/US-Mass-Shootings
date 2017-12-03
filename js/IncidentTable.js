@@ -1,7 +1,7 @@
 class IncidentTable {
   constructor(parent) {
     
-    let width = 950;
+    let width = 1300;
     let height = 200;
     this.width = width;
     this.height = height;

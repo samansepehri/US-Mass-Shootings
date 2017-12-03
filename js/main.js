@@ -47,7 +47,7 @@ function computeTileMapData(statesData, incidentsData) {
       injuredCount += Number(d["Injured"]);
       killedCount += Number(d["Fatalities"]);
     });
-    // console.log(state.Abbreviation, incidentCount)
+    
     tileMapData.push({
       row: parseInt(state.Row),
       col:parseInt(state.Space),
@@ -239,7 +239,6 @@ main.updateLinkedCharts = function() {
   let selectedYears = main.selectedYears;
   let selectedStates = main.selectedStates;
   main.stateYearChartData = computeStateYearChartData(main.filteredDataByYear, selectedYears, selectedStates);
-  console.log(main.stateYearChartData);
 
   //main.stateYearChart.update(main.stateYearChartData, main.criterion);
 }
@@ -257,9 +256,6 @@ async function init() {
   let tileMap = new TileMap(div1);
   main.tileMap = tileMap;
 
-  let incidentTable = new IncidentTable(div1);
-  main.incidentTable = incidentTable;
-
   let div2 = body.append("div")
     .style("display", "inline-block")
     .style("margin-left", "20px");
@@ -268,6 +264,11 @@ async function init() {
 
   let scatterPlot = new ScatterPlot(div2);
   main.scatterPlot = scatterPlot;
+
+  let div3 = body.append("div")
+    .style("display", "block");
+  let incidentTable = new IncidentTable(div3);
+  main.incidentTable = incidentTable;
 
   let tileMapData = {
     metadata: {

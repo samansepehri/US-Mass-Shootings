@@ -1,7 +1,7 @@
 class ScatterPlot {
   constructor(parent) {
-    let width = 300;
-    let height = 300;
+    let width = 250;
+    let height = 250;
     this.width = width;
     this.height = height;
 

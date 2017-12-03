@@ -12,18 +12,21 @@ function numberToDayName(i) {
 class DayChart {
   constructor(parent) {
     let width = 300;
-    let height = 300;
+    let height = 210;
     this.width = width;
     this.height = height;
 
     this.div = parent.append("div")
-      .style("margin-right", "15px")
       .style("display", "block");
     this.title = this.div.append("h2")
       .text("Incidents by day");
     this.svg = this.div.append("svg")
+      .style("overflow", "visible")
+      .style("padding-left", "50px")
       .attr("width", width)
       .attr("height", height);
+
+    this.gYAxis = this.svg.append("g");
   }
 
   update(data, criterion) {
@@ -86,5 +89,13 @@ class DayChart {
         ${x0 + i * (xMargin + w)},
         ${y0Label})`;
       });
+    
+    scaleCriterion = d3.scaleLinear()
+      .domain([0, data.max(criterion)])
+      .range([y0Bar, 0]);
+    let yAxis = d3.axisLeft(scaleCriterion);    
+    this.gYAxis
+      .attr("transform", `translate(0, 0)`)
+      .call(yAxis);
   }
 }
