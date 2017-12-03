@@ -63,7 +63,7 @@ class YearChart {
     }
 
     let domain = [0, 10, 20, 30, 40, 50];
-    let range = ["#ffff00", "#00c900","#0000c6", "#f032e6",'#ffd8b1'];
+    let range = ["#ffff00", "#00c922","#0000f6", "#f032e6",'#efd091'];
     let stateColorScale = d3.scaleLinear()
       .domain(domain)
       .range(range);

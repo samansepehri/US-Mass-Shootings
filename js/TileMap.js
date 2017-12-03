@@ -57,7 +57,7 @@ class TileMap {
       .range(range);
 
     let domainBroder = [0, 10, 20, 30, 40, 50];
-    let rangeBorder = ["#ffff00", "#00c900","#0000c6", "#f032e6",'#ffd8b1'];
+    let rangeBorder = ["#ffff00", "#00c922","#0000f6", "#f032e6",'#efd091'];
     let borderColorScale = d3.scaleLinear()
       .domain(domainBroder)
       .range(rangeBorder);
