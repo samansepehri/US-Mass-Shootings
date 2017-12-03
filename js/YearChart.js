@@ -39,7 +39,8 @@ class YearChart {
       .style("overflow", "visible");
   }
 
-  update(data, criterion) {
+  update(data, criterion, mode) {
+    console.log(mode);
     self = this;
     let xMargin = 5;
     let w = (this.width - xMargin * data.length) / data.length;
@@ -49,12 +50,20 @@ class YearChart {
 
     let maxIncidentCount = 1;
     data.forEach((item) => {
-      if (item[criterion] > maxIncidentCount) maxIncidentCount = item[criterion];
+      if (item.sum(criterion) > maxIncidentCount) maxIncidentCount = item.sum(criterion);
     });
 
     let scaleIncidentCount = (incidentCount) => {
       return incidentCount * y0Bar / maxIncidentCount;
     }
+
+    let domain = [0, 10, 20, 30, 40, 50];
+    let range = ["#ffff00", "#00c900","#0000c6", "#f032e6",'#ffd8b1'];
+    let stateColorScale = d3.scaleLinear()
+      .domain(domain)
+      .range(range);
+
+
     let g = this.svg.selectAll('g.year-bar')
             .data(data);
             let gEnter = g.enter()
@@ -65,7 +74,7 @@ class YearChart {
             });
     
     let rect = g.selectAll("rect.year-portion")
-      .data(function(d, i) { return [d]; });
+      .data(function(d, i) { return d; });
 
     let rectEnter = rect.enter()
       .append("rect")
@@ -75,7 +84,7 @@ class YearChart {
     
     rect.merge(rectEnter)
       .attr('x', (d, i) => x0 + main.years.indexOf(d.year) * (xMargin + w) - w )
-      .attr("fill", "red")
+      .attr("fill", (d) => mode =='default'?'red': stateColorScale(main.allStates.indexOf(d.state)))
       .transition()
       .duration(main.animation.duration)
       .delay(main.animation.delay)
@@ -84,6 +93,8 @@ class YearChart {
       .attr("height", (d) => {
         return scaleIncidentCount(d[criterion])
       });
+
+      rect.exit().remove();
     
     let yearLabel = this.svg.selectAll("text.year-label")
       .data(data);
@@ -92,8 +103,8 @@ class YearChart {
       .classed("year-label", true)
     
     yearLabel.merge(yearLabelEnter)
-      .text((d) => {
-        return d.year;
+      .text((d, i) => {
+        return main.years[i];
       })
       .attr("text-anchor", "middle")
       .style("font-size", "0.9em")

@@ -36,7 +36,7 @@ class TileMap {
   }
 
   update(data, criterion) {
-    self = this;
+    let self = this;
     let rowCount = data.metadata.rowCount;
     let colCount = data.metadata.colCount;
 

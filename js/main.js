@@ -102,7 +102,7 @@ main = {};
 
 main.updateCriterion = function(criterion) {
   main.criterion = criterion;
-  main.yearChart.update(main.yearChartData, criterion);
+  main.yearChart.update(main.yearChartData, criterion, 'default');
   main.tileMap.update(main.tileMapData, criterion);
   main.dayChart.update(main.dayChartData, criterion);
   main.stateYearChart.update(main.stateYearChartData, criterion);
@@ -135,13 +135,13 @@ function computeYearChartData(filteredData){
     let injured = thisYear.sum("Injured");
     let totalVictims = killed + injured;
     let incidentCount = thisYear.length;
-    yearChartData.push({
+    yearChartData.push([{
       year: main.years[y],
       incidentCount: incidentCount,
       killedCount: killed,
       injuredCount: injured,
       totalVictimCount: totalVictims
-    });
+    }]);
   }
   return yearChartData;
 }
@@ -149,7 +149,7 @@ function computeYearChartData(filteredData){
 function computeStateYearChartData(allData, selectedYears, selectedStates) {
 
   let stateYearChartData = [];
-  selectedYears.forEach(function(year, y) {
+  main.years.forEach(function(year, y) {
     stateYearChartData[y] = [];
     selectedStates.forEach(function (state, s) {
 
@@ -222,7 +222,7 @@ main.updateStateList = function(selectedStates) {
 main.updateLinkedCharts = function() {
 
   main.yearChartData = computeYearChartData(main.filteredData);
-  main.yearChart.update(main.yearChartData, main.criterion);
+  main.yearChart.update(main.yearChartData, main.criterion, 'default');
 
   main.tileMapData.data = computeTileMapData(main.statesData, main.filteredDataByYear);
   main.tileMap.update(main.tileMapData, main.criterion);
@@ -238,8 +238,12 @@ main.updateLinkedCharts = function() {
 
   let selectedYears = main.selectedYears;
   let selectedStates = main.selectedStates;
-  main.stateYearChartData = computeStateYearChartData(main.filteredDataByYear, selectedYears, selectedStates);
-  console.log(main.stateYearChartData);
+  if(selectedStates.length > 0){
+    main.stateYearChartData = computeStateYearChartData(main.filteredDataByYear, selectedYears, selectedStates);
+    console.log(main.stateYearChartData);
+    main.yearChart.update(main.stateYearChartData, main.criterion, 'forStates');
+  }
+
 
   //main.stateYearChart.update(main.stateYearChartData, main.criterion);
 }
@@ -318,15 +322,15 @@ async function init() {
     let killed = thisYear.sum("Fatalities");
     let injured = thisYear.sum("Injured");
     let totalVictims = killed + injured;
-    main.yearChartData.push({
+    main.yearChartData.push([{
       year: years[y],
       incidentCount: thisYear.length,
       killedCount: killed,
       injuredCount: injured,
       totalVictimCount: totalVictims
-    });
+    }]);
   }
-  yearChart.update(main.yearChartData, criterion);
+  yearChart.update(main.yearChartData, criterion, 'default');
   main.updateYearRange(minYear, maxYear);
 }
 
