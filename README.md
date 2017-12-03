@@ -9,5 +9,3 @@ Team Members:
 * Saman Sepehri
 
 [Process book](https://github.com/samansepehri/US-Mass-Shootings/blob/master/process-book.pdf)
-
-![screenshot](media/screenshot.png)
