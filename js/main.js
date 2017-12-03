@@ -22,6 +22,15 @@ function parseDate(str) {
   }
 }
 
+function formatDate(date) {
+  let m = date.month.toString();
+  if (m.length == 1) m = "0" + m;
+
+  let d = date.day.toString();
+  if (d.length == 1) d = "0" + d;
+  return date.year.toString() + "/" + m + "/" + d
+}
+
 function loadData(path) {
   return new Promise((resolve, reject) => {
     d3.csv(path, (error, data) => {
@@ -47,7 +56,7 @@ function computeTileMapData(statesData, incidentsData) {
       injuredCount += Number(d["Injured"]);
       killedCount += Number(d["Fatalities"]);
     });
-    
+
     tileMapData.push({
       row: parseInt(state.Row),
       col:parseInt(state.Space),
@@ -91,7 +100,7 @@ function computeScatterPlotData(incidentsData) {
       title: item.Title,
       injured: injured,
       killed: killed,
-      date: item.Date,
+      date: parseDate(item.Date),
       state: item.State
     });
   });

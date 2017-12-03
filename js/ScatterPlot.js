@@ -122,7 +122,7 @@ class ScatterPlot {
           .style("top", top)
           .style("visibility", "visible");
 
-        let tooltipText = "date: " + d.date + "<br>state: " + d.state +
+        let tooltipText = "date: " + formatDate(d.date) + "<br>state: " + d.state +
           "<br>killed: " + d.killed + "<br>injured: " + d.injured;
         divTooltipTitle.html(tooltipText);
         main.incidentTable.highlight(d.id);

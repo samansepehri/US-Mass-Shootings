@@ -63,15 +63,7 @@ class IncidentTable {
         hashIdToRow[d.id] = d3.select(this);
       });
     tr.exit().remove();
-
-    let formatDate = function(date) {
-      let m = date.month.toString();
-      if (m.length == 1) m = "0" + m;
-
-      let d = date.day.toString();
-      if (d.length == 1) d = "0" + d;
-      return date.year.toString() + "/" + m + "/" + d
-    }
+    
     let td = trMerged
       .selectAll("td").data((d) => {
         return [
