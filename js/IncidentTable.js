@@ -34,13 +34,31 @@ class IncidentTable {
     this.table = this.div.append("table").style('width', this.width);
 
     this.tbody = this.table.append("tbody");
+
+    this.hashIdToRow = {};
+  }
+
+  highlight(incidentId) {
+    if (this.selectedRow != null) {
+      this.selectedRow.style("background-color", null)
+    }
+    if (incidentId != null) {
+      let row = this.hashIdToRow[incidentId];
+      this.selectedRow = row;
+      row.style("background-color", "#ffeeaa")
+    }
   }
 
   update(data) {
+    let hashIdToRow = this.hashIdToRow = {};
+    
     let tr = this.tbody.selectAll("tr").data(data);
     let trEnter = tr.enter()
       .append("tr");
-    let trMerged = tr.merge(trEnter);
+    let trMerged = tr.merge(trEnter)
+      .each(function(d, i) {
+        hashIdToRow[d.id] = d3.select(this);
+      });
     tr.exit().remove();
 
     let formatDate = function(date) {
@@ -66,7 +84,9 @@ class IncidentTable {
       });
     
     let tdEnter = td.enter()
-      .append("td").attr('width', (d, i) =>  (this.headData[i].ratio/this.headData.sum('ratio')) * this.width - 2*this.tdPadding)
+      .append("td").attr('width', (d, i) =>  {
+        return (this.headData[i].ratio / this.headData.sum('ratio')) * this.width - 2 * this.tdPadding;
+      })
       .attr("class", (d) => {
         return d.class;
       });
@@ -85,7 +105,7 @@ class IncidentTable {
       .html((d) => { return d.value; });
     trMerged.selectAll("td.col-location")
       .html((d) => { return d.value; });
-      trMerged.selectAll("td.col-area")
+    trMerged.selectAll("td.col-area")
       .html((d) => { return d.value; });
   }
 }

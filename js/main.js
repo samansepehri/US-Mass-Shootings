@@ -67,6 +67,7 @@ function computeIncidentTableData(incidentsData) {
     let killed = parseInt(item.Fatalities);
     let injured = parseInt(item.Injured);
     incidentTableData.push({
+      id: item.id,
       title: item.Title,
       date: parseDate(item.Date),
       state: item.State,
@@ -87,6 +88,7 @@ function computeScatterPlotData(incidentsData) {
     let injured = parseInt(item.Injured);
 
     scatterPlotData.push({
+      id: item.id,
       title: item.Title,
       injured: injured,
       killed: killed
@@ -294,8 +296,9 @@ async function init() {
   let statesData = await loadData("data/states.csv");
   main.statesData = statesData;
 
-  data.forEach(function(incidentData, i) {
-    incidentData.State = incidentData.State.trim();
+  data.forEach(function(incident, i) {
+    incident.State = incident.State.trim();
+    incident.id = i;
   });
   main.allIncidents = data;
   main.filteredData = main.allIncidents;
