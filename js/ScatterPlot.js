@@ -89,7 +89,7 @@ class ScatterPlot {
     circle.merge(circleEnter)
       .attr("cx", (d) => { return xScale(d.killed); })
       .attr("cy", (d) => { return yScale(d.injured); })
-      .attr("r", 2.5)
+      .attr("r", 5)
       .attr("fill", (d) => {
         let victims = d.injured + d.killed;
         return colorScale(victims);

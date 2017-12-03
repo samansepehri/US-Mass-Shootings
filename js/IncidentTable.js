@@ -8,7 +8,7 @@ class IncidentTable {
     self =  this;
     this.divHeader = parent.append("div");
     this.tdPadding = 8;
-    this.tableHeader = this.divHeader.append('table').style('width', this.width);
+    this.tableHeader = this.divHeader.append("table").style("width", this.width);
     this.thead = this.tableHeader.append("thead");
     let trHead = this.thead.append("tr");
     this.headData = [{name: "Title", ratio: 5},
@@ -22,16 +22,18 @@ class IncidentTable {
     
     trHead.selectAll("td").data(this.headData).enter()
       .append("td")
-      .attr('width', (d) => (d.ratio/this.headData.sum('ratio')) * this.width - 2*this.tdPadding)
+      .attr("width", (d) => (d.ratio/this.headData.sum("ratio")) * this.width - 2*this.tdPadding)
       .text((d) => {
         return d.name;
       });
     
-    this.div = parent.append('div')
-    .style("max-height", "300px")
-    .style("overflow-y", "scroll"); 
+    this.div = parent.append("div")
+      .attr("id", "incident-table-div")
+      .style("max-height", "300px")
+      .style("overflow-y", "scroll");
 
-    this.table = this.div.append("table").style('width', this.width);
+    this.table = this.div.append("table")
+      .style("width", this.width);
 
     this.tbody = this.table.append("tbody");
 
@@ -45,6 +47,7 @@ class IncidentTable {
     if (incidentId != null) {
       let row = this.hashIdToRow[incidentId];
       this.selectedRow = row;
+      this.div.node().scrollTo(0, row.node().offsetTop);
       row.style("background-color", "#ffeeaa")
     }
   }
@@ -84,8 +87,8 @@ class IncidentTable {
       });
     
     let tdEnter = td.enter()
-      .append("td").attr('width', (d, i) =>  {
-        return (this.headData[i].ratio / this.headData.sum('ratio')) * this.width - 2 * this.tdPadding;
+      .append("td").attr("width", (d, i) =>  {
+        return (this.headData[i].ratio / this.headData.sum("ratio")) * this.width - 2 * this.tdPadding;
       })
       .attr("class", (d) => {
         return d.class;
