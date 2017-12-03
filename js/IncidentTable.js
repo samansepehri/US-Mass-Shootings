@@ -13,6 +13,7 @@ class IncidentTable {
     let trHead = this.thead.append("tr");
     this.headData = [{name: "Title", ratio: 5},
      {name: "Date", ratio: 2},
+     {name: "Day", ratio: 2},
      {name: "State", ratio: 1},
      {name: "Killed", ratio: 1},
      {name: "Injured", ratio: 1},
@@ -65,6 +66,7 @@ class IncidentTable {
         hashIdToRow[d.id] = d3.select(this);
       })
       .on("mouseenter", function(d) {
+        console.log(d.day);
         d3.select(this).style("background-color", highlightColor);
         main.scatterPlot.highlight(d.id);
       })
@@ -79,6 +81,7 @@ class IncidentTable {
         return [
           { class: "col-title", value: d.title },
           { class: "col-date", value: formatDate(d.date) },
+          { class: "col-day", value: d.day },
           { class: "col-state", value: d.state },
           { class: "col-killed", value: d.killed },
           { class: "col-injured", value: d.injured },
@@ -99,6 +102,8 @@ class IncidentTable {
     trMerged.selectAll("td.col-title")
       .html((d) => { return d.value; });
     trMerged.selectAll("td.col-date")
+      .html((d) => { return d.value; });
+    trMerged.selectAll("td.col-day")
       .html((d) => { return d.value; });
     trMerged.selectAll("td.col-state")
       .html((d) => { return d.value; });

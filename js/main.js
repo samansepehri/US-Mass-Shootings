@@ -83,7 +83,8 @@ function computeIncidentTableData(incidentsData) {
       location: item.Location,
       killed: killed,
       injured: injured,
-      area: item["Incident Area"]
+      area: item["Incident Area"],
+      day: item.DayOfTheWeek
     });
   });
   return incidentTableData;
