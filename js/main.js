@@ -86,12 +86,13 @@ function computeScatterPlotData(incidentsData) {
   incidentsData.forEach(function(item, n) {
     let killed = parseInt(item.Fatalities);
     let injured = parseInt(item.Injured);
-
     scatterPlotData.push({
       id: item.id,
       title: item.Title,
       injured: injured,
-      killed: killed
+      killed: killed,
+      date: item.Date,
+      state: item.State
     });
   });
 
@@ -248,24 +249,26 @@ main.animation = {delay: 250, duration: 500};
 
 async function init() {
   let body = d3.select("body");
-  
-  let yearChart = new YearChart(body);
-  main.yearChart = yearChart;
-
-  let tileMap = new TileMap(body);
-  main.tileMap = tileMap;
-
-  let incidentTable = new IncidentTable(body);
-  main.incidentTable = incidentTable;
 
   let div1 = body.append("div").style("display", "inline");
-  let dayChart = new DayChart(div1);
+
+  let yearChart = new YearChart(div1);
+  main.yearChart = yearChart;
+
+  let tileMap = new TileMap(div1);
+  main.tileMap = tileMap;
+
+  let incidentTable = new IncidentTable(div1);
+  main.incidentTable = incidentTable;
+
+  let div2 = body.append("div").style("display", "inline");
+  let dayChart = new DayChart(div2);
   main.dayChart = dayChart;
 
-  let stateYearChart = new StateYearChart(div1);
+  let stateYearChart = new StateYearChart(div2);
   main.stateYearChart = stateYearChart;
 
-  let scatterPlot = new ScatterPlot(div1);
+  let scatterPlot = new ScatterPlot(div2);
   main.scatterPlot = scatterPlot;
 
   let tileMapData = {

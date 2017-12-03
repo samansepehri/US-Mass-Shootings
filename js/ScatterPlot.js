@@ -26,6 +26,18 @@ class ScatterPlot {
       .text("injured")
       .attr("text-anchor", "middle");
 
+    let legendData = this.legendData = [0, 1, 2, 3, 4];
+    let legendRect = this.svg.selectAll("rect.sp-legend-rect").data(legendData);
+    let legendRectEnter = legendRect.enter().append("rect")
+      .classed("sp-legend-rect", true);
+    
+    let legendLabel = this.svg.selectAll("text.sp-legend-label").data(legendData);
+    let legendLabelEnter = legendLabel.enter().append("text")
+      .classed("sp-legend-label", true);
+
+    this.legendTitle = this.svg.append("text").text("Victims")
+      .attr("text-anchor", "middle");
+
     this.divTooltip = this.div.append("div")
       .style("position", "absolute")
       .style("cursor", "default")
@@ -53,11 +65,13 @@ class ScatterPlot {
       if (victims < minVictims) minVictims = victims;
     }
 
+    let xMax = Math.max(maxKilled, maxInjured);
+    let yMax = xMax;
     let xScale = d3.scaleLinear()
-      .domain([0, maxKilled])
+      .domain([0, xMax])
       .range([0, this.width]);
     let yScale = d3.scaleLinear()
-      .domain([0, maxInjured])
+      .domain([0, yMax])
       .range([this.height, 0]);
 
     let xAxis = d3.axisBottom(xScale);
@@ -75,8 +89,8 @@ class ScatterPlot {
       .attr("transform", `translate(${-30}, ${this.height * 0.5}) rotate(-90) `)
 
     let colorScale = d3.scaleLinear()
-      .domain([minVictims, maxVictims])
-      .range(["#ffeeee", "#ff0000"]);
+      .domain([0, maxVictims])
+      .range(["#ffffff", "#ff0000"]);
 
     let divTooltip = this.divTooltip;
     let divTooltipTitle = this.divTooltipTitle;
@@ -85,6 +99,7 @@ class ScatterPlot {
     let circleEnter = circle.enter()
       .append("circle")
       .attr("fill", "#0000aa")
+      .style("stroke", "black")
       .classed("incident-point", true);
     circle.merge(circleEnter)
       .attr("cx", (d) => { return xScale(d.killed); })
@@ -107,12 +122,47 @@ class ScatterPlot {
           .style("top", top)
           .style("visibility", "visible");
 
-        let tooltipText = "killed: " + d.killed + "<br>" + "injured: " + d.injured;
+        let tooltipText = "date: " + d.date + "<br>state: " + d.state +
+          "<br>killed: " + d.killed + "<br>injured: " + d.injured;
         divTooltipTitle.html(tooltipText);
         main.incidentTable.highlight(d.id);
       });
 
     circle.exit()
       .remove();
+    
+    let legendItemCount = this.legendData.length;
+    let legendHeight = this.height / 3;
+    let legendRectHeight = legendHeight / legendItemCount;
+    let legendRectWidth = 20;
+    let legendXOffset = 30;
+    let legendRect = this.svg.selectAll("rect.sp-legend-rect")
+      .style("stroke", "black")
+      .attr("height", legendRectHeight)
+      .attr("width", legendRectWidth)
+      .attr("transform", (d, i) => {
+        return `translate(
+          ${legendXOffset + this.width - legendRectWidth * 0.5},
+          ${(legendItemCount - 1 - i) * legendRectHeight - legendHeight * 0.5 + this.height * 0.5})`
+      })
+      .attr("fill", (d, i) => {
+        return colorScale(Math.floor(i / (legendItemCount - 1) * maxVictims));
+      });
+
+    let legendLabel = this.svg.selectAll("text.sp-legend-label")
+      .text((d, i) => {
+        return Math.floor(i / (legendItemCount - 1) * maxVictims).toString();
+      })
+      .attr("dy", "0.5em")
+      .attr("transform", (d, i) => {
+        return `translate(
+          ${legendXOffset + this.width - legendRectWidth * 0.5 + 30},
+          ${(legendItemCount - 1 - i) * legendRectHeight - legendHeight * 0.5 + this.height * 0.5
+          + legendRectHeight * 0.5})`
+      });
+    
+    this.legendTitle.attr("transform", `translate(
+      ${legendXOffset + this.width},
+      ${this.height * 0.5 - legendHeight * 0.5 - 10})`);
   }
 }
