@@ -242,6 +242,7 @@ main.updateLinkedCharts = function() {
   let selectedYears = main.selectedYears;
   let selectedStates = main.selectedStates;
   main.stateYearChartData = computeStateYearChartData(main.filteredDataByYear, selectedYears, selectedStates);
+  console.log(main.stateYearChartData);
   main.stateYearChart.update(main.stateYearChartData, main.criterion);
 }
 

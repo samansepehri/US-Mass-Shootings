@@ -27,13 +27,18 @@ class TileMap {
       .attr("width", width)
       .attr("height", height)
       .attr("overflow", "visible");
-
+      console.log(this.randomColors(10, 3, 0.5, 0.5));
   }
   clearSelection() {
     console.log('Clear state selection');
     let rect = this.svg.selectAll("rect.tile");
     rect.classed('selected-state', false).transition().duration(main.animation.duration).style("stroke-width", "1px")
     .style("stroke", "#666666");
+  }
+  randomColors(n, base, saturation, lightness)
+  {
+
+
   }
 
   update(data, criterion) {
@@ -56,7 +61,13 @@ class TileMap {
     let colorScale = d3.scaleLinear()
       .domain(domain)
       .range(range);
-    
+
+    let domainBroder = [0, 10, 20, 30, 40, 50];
+    let rangeBorder = ["#ffff00", "#00c900","#0000c6", "#f032e6",'#ffd8b1'];
+    let borderColorScale = d3.scaleLinear()
+      .domain(domainBroder)
+      .range(rangeBorder);
+
     let rect = this.svg.selectAll("rect.tile")
       .data(data.data);
     let rectEnter = rect.enter()
@@ -76,7 +87,7 @@ class TileMap {
       })
       //.transition()
       //.duration(main.animation.duration)
-      .attr("fill", (d) => {
+      .attr("fill", (d, i) => {
         return colorScale(d[criterion]);
       });
 
@@ -133,7 +144,7 @@ class TileMap {
           .transition()
           .duration(main.animation.duration)
           .style("stroke-width", "4px")
-          .style("stroke", "#666666");
+          .style("stroke", borderColorScale(i));
           self.selectedStates.push(d.name);
         }
         main.updateStateList(self.selectedStates);
