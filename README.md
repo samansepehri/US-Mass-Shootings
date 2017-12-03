@@ -8,4 +8,8 @@ Team Members:
 * Junior Rojas
 * Saman Sepehri
 
+[Website](https://samansepehri.github.io/US-Mass-Shootings/)
+
 [Process book](https://github.com/samansepehri/US-Mass-Shootings/blob/master/process-book.pdf)
+
+[Video](https://youtu.be/_Wi44osTHH4)
