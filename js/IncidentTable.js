@@ -69,7 +69,8 @@ class IncidentTable {
         main.scatterPlot.highlight(d.id);
       })
       .on("mouseleave", function(d) {
-        d3.select(this).style("background-color", null)
+        d3.select(this).style("background-color", null);
+        main.scatterPlot.highlight(null);
       });
     tr.exit().remove();
 

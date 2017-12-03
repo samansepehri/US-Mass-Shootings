@@ -6,6 +6,7 @@ class ScatterPlot {
     this.height = height;
 
     this.itemRadius = 4;
+    this.itemStrokeWidth = 1;
 
     this.div = parent.append("div")
       .style("overflow", "visible")
@@ -56,12 +57,14 @@ class ScatterPlot {
 
   highlight(incidentId) {
     if (this.selectedCircle != null) {
-      this.selectedCircle.attr("r", this.itemRadius)
+      this.selectedCircle.attr("r", this.itemRadius);
+      this.selectedCircle.style("stroke-width", this.itemStrokeWidth);
     }
     if (incidentId != null) {
       let circle = this.hashIdToCircle[incidentId];
       this.selectedCircle = circle;
-      circle.attr("r", this.itemRadius * 1.5)
+      circle.attr("r", this.itemRadius * 1.5);
+      circle.style("stroke-width", this.itemStrokeWidth * 2.1);
     }
   }
 
@@ -110,6 +113,8 @@ class ScatterPlot {
       .domain([0, maxVictims])
       .range(["#ffffff", "#ff0000"]);
 
+    let highlight = this.highlight.bind(this);
+
     let divTooltip = this.divTooltip;
     let divTooltipTitle = this.divTooltipTitle;
 
@@ -118,6 +123,7 @@ class ScatterPlot {
       .append("circle")
       .attr("fill", "#0000aa")
       .style("stroke", "black")
+      .style("stroke-width", this.itemStrokeWidth)
       .classed("incident-point", true);
     circle.merge(circleEnter)
       .each(function(d, i) {
@@ -130,9 +136,11 @@ class ScatterPlot {
         let victims = d.injured + d.killed;
         return colorScale(victims);
       })
-      .on("mouseout", function(d) {
+      .on("mouseleave", function(d) {
         divTooltip.style("visibility", "hidden");
         main.incidentTable.highlight(null);
+
+        highlight(null);
       })
       .on("mouseenter", function(d) {
         let mousePos = d3.mouse(document.body);
@@ -147,6 +155,8 @@ class ScatterPlot {
          
         divTooltipTitle.html(tooltipText);
         main.incidentTable.highlight(d.id);
+
+        highlight(d.id);
       });
 
     circle.exit()
